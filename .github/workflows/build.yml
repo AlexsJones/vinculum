@@ -27,4 +27,6 @@ jobs:
           go mod download
 
       - name: Build
-        run: $GOPATH/bin/gox -output="build/vinculum_{{.OS}}_{{.Arch}}" -os="linux"
+        run: |
+          GOBIN=$PWD/bin github.com/mitchellh/gox
+          ./bin/gox -output="build/vinculum_{{.OS}}_{{.Arch}}" -os="linux"
