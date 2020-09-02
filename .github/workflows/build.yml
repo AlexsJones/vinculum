@@ -18,7 +18,7 @@ jobs:
         with:
           go-version: ^1.13
         id: go
-        
+
       - name: setup env
         run: |
           echo "::set-env name=GOPATH::$(go env GOPATH)"
@@ -32,4 +32,4 @@ jobs:
           go mod download
 
       - name: Build
-        run: make
+        run: gox -output="build/vinculum_{{.OS}}_{{.Arch}}" -os="linux"
