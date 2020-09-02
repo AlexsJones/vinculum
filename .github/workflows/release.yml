@@ -28,11 +28,11 @@ jobs:
         run: |
           GOBIN=$PWD/bin go install github.com/mitchellh/gox
           ./bin/gox -output="build/vinculum_{{.OS}}_{{.Arch}}" -os="linux"
-
+      - uses: nelonoel/branch-name@v1
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          automatic_release_tag: "${GITHUB_REF##*/}"
+          automatic_release_tag: "${BRANCH_NAME}"
           files: |
             build/*
