@@ -118,7 +118,14 @@ setup_binary() {
     $SUDO mv -f ${TMP_BIN} ${BIN_DIR}/${APP}
 }
 
+setup_env() {
+   SUDO=sudo
+    if [ $(id -u) -eq 0 ]; then
+        SUDO=
+    fi
+}
 {
+  set up_env
 verify_downloader curl || verify_downloader wget || fatal 'Can not find curl or wget for downloading files'
 LATEST_VERSION=$(lastversion "$DOWNLOADER")
 setup_verify_arch
