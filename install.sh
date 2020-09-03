@@ -125,7 +125,7 @@ setup_env() {
     fi
 }
 {
-  set up_env
+setup_env
 verify_downloader curl || verify_downloader wget || fatal 'Can not find curl or wget for downloading files'
 LATEST_VERSION=$(lastversion "$DOWNLOADER")
 setup_verify_arch
