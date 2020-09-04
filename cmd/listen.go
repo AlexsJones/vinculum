@@ -17,8 +17,8 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/AlexsJones/vinculum/pkg/impl"
 	"github.com/AlexsJones/vinculum/pkg/proto"
-	"github.com/AlexsJones/vinculum/pkg/proto/impl"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
