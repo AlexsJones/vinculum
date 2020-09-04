@@ -26,7 +26,7 @@ jobs:
       - name: Set release version
         id: set_release_version
         run: |
-          echo ::set-output name=release_version::$(echo $GITHUB_REF | cut -d / -f 3)
+          echo ::set-output name=release_version::$(echo $GITHUB_REF | cut -d / -f 4)
           echo $release_version
       - name: Build
         run: |
