@@ -1,0 +1,17 @@
+
+syntax = "proto3";
+option go_package = "pkg/proto";
+package proto;
+
+service Connection {
+
+    rpc ConnectionStream (stream ConnectionSyn) returns (stream ConnectionAck) {}
+}
+
+message ConnectionSyn {
+    string senderGuid = 1;
+}
+
+message ConnectionAck {
+    string responderGuid = 1;
+}

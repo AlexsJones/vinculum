@@ -20,42 +20,47 @@ import (
 	"github.com/AlexsJones/vinculum/pkg/impl"
 	"github.com/AlexsJones/vinculum/pkg/proto"
 	"github.com/fatih/color"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"log"
 	"net"
+
+	"github.com/spf13/cobra"
 )
 
 var (
-	defaultGRPCListeningAddr = ":9671"
+	defaultGRPCListeningAddr = "localhost:7559"
 )
+
+func listen() {
+
+	lis, err := net.Listen("tcp", defaultGRPCListeningAddr)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	commsServer := impl.ConnectionImpl{}
+	grpcServer := grpc.NewServer()
+
+	proto.RegisterConnectionServer(grpcServer, commsServer)
+
+	color.Blue(fmt.Sprintf("Starting GRPC server on %s", defaultGRPCListeningAddr))
+
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %s", err)
+
+	}
+	defer grpcServer.Stop()
+
+}
+
 // listenCmd represents the listen command
 var listenCmd = &cobra.Command{
 	Use:   "listen",
-	Short: "Start vinculum in a passive listening mode",
+	Short: "Start the listener server",
 	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
+		listen()
 
-		if addr := viper.GetString("defaultGRPCListeningAddr"); addr != "" {
-			defaultGRPCListeningAddr = addr
-		}
-
-		lis, err := net.Listen("tcp", defaultGRPCListeningAddr)
-		if err != nil {
-			log.Fatalf("failed to listen: %v", err)
-		}
-
-		handShakeServer := impl.HandShakeImpl{}
-		grpcServer := grpc.NewServer()
-
-		proto.RegisterHandShakeServer(grpcServer,handShakeServer)
-
-		color.Blue(fmt.Sprintf("Starting GRPC server on %s",defaultGRPCListeningAddr))
-
-		if err := grpcServer.Serve(lis); err != nil {
-			log.Fatalf("failed to serve: %s", err)
-		}
 	},
 }
 

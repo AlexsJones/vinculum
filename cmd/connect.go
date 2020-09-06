@@ -16,27 +16,92 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
+	"context"
+	"github.com/AlexsJones/vinculum/pkg/proto"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	log "github.com/sirupsen/logrus"
+	"io"
 )
 
+var (
+	tls bool
+	caFile string
+	serverAddr string
+	serverHostOverride string
+)
+
+func connect() {
+
+	var opts []grpc.DialOption
+	if tls {
+		if caFile == "" {
+			log.Fatal("caFile is missing")
+		}
+		creds, err := credentials.NewClientTLSFromFile(caFile, serverHostOverride)
+		if err != nil {
+			log.Fatalf("Failed to create TLS credentials %v", err)
+		}
+		opts = append(opts, grpc.WithTransportCredentials(creds))
+	} else {
+		opts = append(opts, grpc.WithInsecure())
+	}
+
+	opts = append(opts, grpc.WithBlock())
+	conn, err := grpc.Dial(serverAddr, opts...)
+	if err != nil {
+		log.Fatalf("fail to dial: %v", err)
+	}
+	defer conn.Close()
+
+	client := proto.NewConnectionClient(conn)
+
+	stream, err := client.ConnectionStream(context.Background())
+
+	waitc := make(chan struct{})
+	go func() {
+		for {
+			updateAck, err := stream.Recv()
+			if err == io.EOF {
+				// read done.
+				close(waitc)
+				return
+			}
+			if err != nil {
+				log.Fatalf("Failed to receive an UpdateSyn : %v", err)
+			}
+			log.Debugf("Received UpdateSyn from %s",updateAck.ResponderGuid)
+
+		}
+	}()
+
+	if err := stream.Send(&proto.ConnectionSyn{
+		SenderGuid: viper.GetString("vinculum-guid"),
+	}); err != nil {
+		log.Fatalf("Failed to send UpdateSyn: %v", err)
+	}
+
+	stream.CloseSend()
+	<-waitc
+}
 // connectCmd represents the connect command
 var connectCmd = &cobra.Command{
 	Use:   "connect",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Connect to another vinculum",
+	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("connect called")
+		connect()
 	},
 }
 
 func init() {
+
+	connectCmd.Flags().BoolVarP(&tls,"tls","t",false,"Connection uses TLS if true, else plain TCP")
+	connectCmd.Flags().StringVarP(&caFile,"cafile","c","","The file containing the CA cert file")
+	connectCmd.Flags().StringVarP(&serverAddr,"serverAddr","s","","The server address in the format of host:port")
+	connectCmd.Flags().StringVarP(&serverHostOverride,"serverHostOverride","o","","The server name used to verify the hostname returned by the TLS handshake")
 	rootCmd.AddCommand(connectCmd)
 
 	// Here you will define your flags and configuration settings.

@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 	"os"
 
@@ -48,6 +49,9 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
+	// App specific setup
+	guid := uuid.New()
+	viper.Set("vinculum-guid",guid.String())
 }
 
 // initConfig reads in config file and ENV variables if set.
