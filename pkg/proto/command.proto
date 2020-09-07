@@ -1,0 +1,16 @@
+syntax = "proto3";
+option go_package = "pkg/proto";
+package proto;
+
+service Command {
+    // Leader to client stream
+    rpc Stream (stream CommandSyn) returns (stream CommandAck) {}
+}
+
+message CommandSyn {
+    int64 keepAlive = 1;
+}
+
+message CommandAck {
+
+}

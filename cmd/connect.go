@@ -16,8 +16,16 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/AlexsJones/vinculum/pkg/impl"
+	"fmt"
+	"github.com/AlexsJones/vinculum/pkg/config"
+	"github.com/AlexsJones/vinculum/pkg/proto"
+	"github.com/AlexsJones/vinculum/pkg/proto/impl"
+	"github.com/fatih/color"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	"net"
+	"os"
 )
 
 var (
@@ -27,13 +35,56 @@ var (
 	serverHostOverride string
 )
 
+func commandListener(c chan bool) {
+	lis, err := net.Listen("tcp", config.DefaultGRPCommandListeningAddr)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	commsServer := impl.CommandServerImpl{}
+	grpcServer := grpc.NewServer()
+
+	proto.RegisterCommandServer(grpcServer, commsServer)
+
+	color.Blue(fmt.Sprintf("Starting GRPC server for commands on %s", config.DefaultGRPCommandListeningAddr))
+
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %s", err)
+
+	}
+
+	c <- true
+
+	defer grpcServer.Stop()
+}
 // connectCmd represents the connect command
 var connectCmd = &cobra.Command{
 	Use:   "connect",
 	Short: "Connect to another vinculum",
 	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		impl.Connect(tls,caFile,serverAddr,serverHostOverride)
+
+		ctx := make(chan bool)
+
+		color.Blue("Starting command listener")
+
+		go commandListener(ctx)
+
+		color.Blue("Starting connection client")
+
+		if _, err := impl.ConnectClient(tls,caFile,serverAddr,serverHostOverride); err != nil {
+			log.Fatal(err)
+		}
+
+		for
+		{
+			select  {
+				case msg := <- ctx:
+				if msg {
+					os.Exit(0)
+				}
+			}
+		}
 	},
 }
 

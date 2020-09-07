@@ -1,17 +1,22 @@
-
 syntax = "proto3";
 option go_package = "pkg/proto";
+import "machine.proto";
 package proto;
 
-service Connection {
-
-    rpc ConnectionStream (stream ConnectionSyn) returns (stream ConnectionAck) {}
+service Node {
+    // Client to leader registration
+    rpc Register(ConnectionSyn) returns (ConnectionAck) {}
 }
 
 message ConnectionSyn {
-    string senderGuid = 1;
+    NodeConfig node = 1;
 }
 
 message ConnectionAck {
-    string responderGuid = 1;
+    NodeConfig node = 1;
+    enum State {
+        Negotiating = 0;
+        Known = 1;
+    }
+    State state = 2;
 }

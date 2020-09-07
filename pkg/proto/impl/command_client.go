@@ -3,14 +3,13 @@ package impl
 import (
 	"context"
 	"github.com/AlexsJones/vinculum/pkg/proto"
-	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"io"
 	log "github.com/sirupsen/logrus"
 )
 
-func Connect(tls bool, caFile string, serverAddr string, serverHostOverride string) {
+func ConnectCommand(tls bool, caFile string, serverAddr string, serverHostOverride string) {
 
 	var opts []grpc.DialOption
 	if tls {
@@ -33,14 +32,16 @@ func Connect(tls bool, caFile string, serverAddr string, serverHostOverride stri
 	}
 	defer conn.Close()
 
-	client := proto.NewConnectionClient(conn)
+	client := proto.NewCommandClient(conn)
 
-	stream, err := client.ConnectionStream(context.Background())
-
+	stream, err := client.Stream(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
 	waitc := make(chan struct{})
 	go func() {
 		for {
-			updateAck, err := stream.Recv()
+			_, err := stream.Recv()
 			if err == io.EOF {
 				// read done.
 				close(waitc)
@@ -49,13 +50,12 @@ func Connect(tls bool, caFile string, serverAddr string, serverHostOverride stri
 			if err != nil {
 				log.Fatalf("Failed to receive an UpdateSyn : %v", err)
 			}
-			log.Debugf("Received UpdateSyn from %s",updateAck.ResponderGuid)
 
 		}
 	}()
 
-	if err := stream.Send(&proto.ConnectionSyn{
-		SenderGuid: viper.GetString("vinculum-guid"),
+	if err := stream.Send(&proto.CommandSyn{
+		KeepAlive: 1,
 	}); err != nil {
 		log.Fatalf("Failed to send UpdateSyn: %v", err)
 	}

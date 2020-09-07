@@ -17,33 +17,33 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/AlexsJones/vinculum/pkg/impl"
+	"github.com/AlexsJones/vinculum/pkg/config"
 	"github.com/AlexsJones/vinculum/pkg/proto"
+	"github.com/AlexsJones/vinculum/pkg/proto/impl"
+	"github.com/AlexsJones/vinculum/pkg/tracker"
 	"github.com/fatih/color"
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"log"
+	"math/rand"
 	"net"
+	"time"
 
 	"github.com/spf13/cobra"
 )
 
-var (
-	defaultGRPCListeningAddr = "localhost:7559"
-)
-
 func listen() {
 
-	lis, err := net.Listen("tcp", defaultGRPCListeningAddr)
+	lis, err := net.Listen("tcp", config.DefaultGRPCConnectListeningAddr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	commsServer := impl.ConnectionImpl{}
+	commsServer := impl.ConnectionServerImpl{}
 	grpcServer := grpc.NewServer()
 
-	proto.RegisterConnectionServer(grpcServer, commsServer)
+	proto.RegisterNodeServer(grpcServer, commsServer)
 
-	color.Blue(fmt.Sprintf("Starting GRPC server on %s", defaultGRPCListeningAddr))
+	color.Blue(fmt.Sprintf("Starting GRPC server for registering on %s", config.DefaultGRPCConnectListeningAddr))
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)
@@ -59,8 +59,26 @@ var listenCmd = &cobra.Command{
 	Short: "Start the listener server",
 	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		listen()
+		r := rand.Intn(5)
+		go listen()
 
+		// Listening server started, the main command loop will send commands
+		for {
+			if tracker.Instance().Count() < 1 {
+
+				time.Sleep(time.Duration(r) * time.Second)
+				continue
+			}
+
+			for _, node := range tracker.Instance().Nodes {
+				serverAdd := fmt.Sprintf("%s%s",node.IpAddr,config.DefaultGRPCommandListeningAddr)
+				color.Yellow("Sending command to %s@%s",node.Guid,serverAdd)
+				impl.ConnectCommand(tls,caFile,serverAdd,serverHostOverride)
+				color.Blue("Sent")
+			}
+
+			time.Sleep(time.Duration(r) * time.Second)
+		}
 	},
 }
 
