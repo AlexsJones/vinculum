@@ -31,7 +31,7 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "vinculum",
 	Short: "A communication nexus",
-	Long: ``,
+	Long:  ``,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
@@ -51,7 +51,7 @@ func init() {
 
 	// App specific setup
 	guid := uuid.New()
-	viper.Set("vinculum-guid",guid.String())
+	viper.Set("vinculum-guid", guid.String())
 }
 
 // initConfig reads in config file and ENV variables if set.

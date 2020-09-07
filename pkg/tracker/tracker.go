@@ -45,4 +45,3 @@ func (t *Tracker) Add(node *proto.NodeConfig) {
 	defer t.mutex.Unlock()
 	t.Nodes[node.Guid] = node
 }
-

@@ -29,12 +29,56 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
+type CommandName int32
+
+const (
+	CommandName_HealthCheck CommandName = 0
+)
+
+// Enum value maps for CommandName.
+var (
+	CommandName_name = map[int32]string{
+		0: "HealthCheck",
+	}
+	CommandName_value = map[string]int32{
+		"HealthCheck": 0,
+	}
+)
+
+func (x CommandName) Enum() *CommandName {
+	p := new(CommandName)
+	*p = x
+	return p
+}
+
+func (x CommandName) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (CommandName) Descriptor() protoreflect.EnumDescriptor {
+	return file_command_proto_enumTypes[0].Descriptor()
+}
+
+func (CommandName) Type() protoreflect.EnumType {
+	return &file_command_proto_enumTypes[0]
+}
+
+func (x CommandName) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use CommandName.Descriptor instead.
+func (CommandName) EnumDescriptor() ([]byte, []int) {
+	return file_command_proto_rawDescGZIP(), []int{0}
+}
+
 type CommandSyn struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	KeepAlive int64 `protobuf:"varint,1,opt,name=keepAlive,proto3" json:"keepAlive,omitempty"`
+	CommandName CommandName `protobuf:"varint,1,opt,name=commandName,proto3,enum=proto.CommandName" json:"commandName,omitempty"`
+	CommandArgs string      `protobuf:"bytes,2,opt,name=commandArgs,proto3" json:"commandArgs,omitempty"`
 }
 
 func (x *CommandSyn) Reset() {
@@ -69,17 +113,26 @@ func (*CommandSyn) Descriptor() ([]byte, []int) {
 	return file_command_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CommandSyn) GetKeepAlive() int64 {
+func (x *CommandSyn) GetCommandName() CommandName {
 	if x != nil {
-		return x.KeepAlive
+		return x.CommandName
 	}
-	return 0
+	return CommandName_HealthCheck
+}
+
+func (x *CommandSyn) GetCommandArgs() string {
+	if x != nil {
+		return x.CommandArgs
+	}
+	return ""
 }
 
 type CommandAck struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Error string `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
 }
 
 func (x *CommandAck) Reset() {
@@ -114,14 +167,28 @@ func (*CommandAck) Descriptor() ([]byte, []int) {
 	return file_command_proto_rawDescGZIP(), []int{1}
 }
 
+func (x *CommandAck) GetError() string {
+	if x != nil {
+		return x.Error
+	}
+	return ""
+}
+
 var File_command_proto protoreflect.FileDescriptor
 
 var file_command_proto_rawDesc = []byte{
 	0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
-	0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x2a, 0x0a, 0x0a, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
-	0x64, 0x53, 0x79, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x6b, 0x65, 0x65, 0x70, 0x41, 0x6c, 0x69, 0x76,
-	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x6b, 0x65, 0x65, 0x70, 0x41, 0x6c, 0x69,
-	0x76, 0x65, 0x22, 0x0c, 0x0a, 0x0a, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x63, 0x6b,
+	0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x64, 0x0a, 0x0a, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
+	0x64, 0x53, 0x79, 0x6e, 0x12, 0x34, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e,
+	0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x0b, 0x63,
+	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x6f,
+	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x72, 0x67, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x72, 0x67, 0x73, 0x22, 0x22, 0x0a, 0x0a,
+	0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x63, 0x6b, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x72,
+	0x72, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72,
+	0x2a, 0x1e, 0x0a, 0x0b, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x12,
+	0x0f, 0x0a, 0x0b, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x10, 0x00,
 	0x32, 0x3f, 0x0a, 0x07, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x34, 0x0a, 0x06, 0x53,
 	0x74, 0x72, 0x65, 0x61, 0x6d, 0x12, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f,
 	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x53, 0x79, 0x6e, 0x1a, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
@@ -142,19 +209,22 @@ func file_command_proto_rawDescGZIP() []byte {
 	return file_command_proto_rawDescData
 }
 
+var file_command_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_command_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_command_proto_goTypes = []interface{}{
-	(*CommandSyn)(nil), // 0: proto.CommandSyn
-	(*CommandAck)(nil), // 1: proto.CommandAck
+	(CommandName)(0),   // 0: proto.CommandName
+	(*CommandSyn)(nil), // 1: proto.CommandSyn
+	(*CommandAck)(nil), // 2: proto.CommandAck
 }
 var file_command_proto_depIdxs = []int32{
-	0, // 0: proto.Command.Stream:input_type -> proto.CommandSyn
-	1, // 1: proto.Command.Stream:output_type -> proto.CommandAck
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: proto.CommandSyn.commandName:type_name -> proto.CommandName
+	1, // 1: proto.Command.Stream:input_type -> proto.CommandSyn
+	2, // 2: proto.Command.Stream:output_type -> proto.CommandAck
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_command_proto_init() }
@@ -193,13 +263,14 @@ func file_command_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_command_proto_rawDesc,
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_command_proto_goTypes,
 		DependencyIndexes: file_command_proto_depIdxs,
+		EnumInfos:         file_command_proto_enumTypes,
 		MessageInfos:      file_command_proto_msgTypes,
 	}.Build()
 	File_command_proto = out.File

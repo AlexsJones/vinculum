@@ -1,0 +1,109 @@
+syntax = "proto3";
+option go_package = "pkg/proto";
+package proto;
+
+message NodeConfig {
+    string guid = 1;
+    SystemInfo systemInfo = 2;
+    string IpAddr = 3;
+    string Network = 4;
+}
+
+message SystemInfo {
+
+    message SYSINFO {
+        string version = 1;
+        string timestamp = 2;
+    }
+
+    SYSINFO sysinfo = 1;
+
+    message NODE {
+        string hostname = 1;
+        string machineid = 2;
+        string timezone = 3;
+    }
+
+    NODE node = 2;
+
+    message OS {
+        string name = 1;
+        string vendor = 2;
+        string version = 3;
+        string release = 4;
+        string architecture = 5;
+    }
+
+    OS os = 3;
+
+    message KERNEL {
+        string release = 1;
+        string version = 2;
+        string architecture = 3;
+    }
+
+    KERNEL kernel = 4;
+
+    message PRODUCT {
+        string name = 1;
+        string vendor = 2;
+    }
+
+    PRODUCT product = 5;
+
+    message BOARD {
+        string name = 1;
+        string vendor = 2;
+        string version = 3;
+    }
+
+    BOARD board = 6;
+
+    message CHASSIS {
+        double type = 1;
+        string vendor = 2;
+    }
+
+    CHASSIS chassis = 7;
+
+    message BIOS {
+        string vendor = 1;
+        string version = 2;
+        string date = 3;
+    }
+
+    BIOS bios = 8;
+
+    message CPU {
+        string vendor = 1;
+        string model = 2;
+        double cache = 3;
+        double cpus = 4;
+        double cores = 5;
+        double threads = 6;
+    }
+
+    CPU cpu = 9;
+
+    message MEMORY {
+    }
+
+    MEMORY memory = 10;
+
+    message STORAGE {
+        string name = 1;
+        string model = 2;
+        string serial = 3;
+        double size = 4;
+    }
+
+    repeated STORAGE storage = 11;
+
+    message NETWORK {
+        string name = 1;
+        string driver = 2;
+        string macaddress = 3;
+    }
+
+    repeated NETWORK network = 12;
+}

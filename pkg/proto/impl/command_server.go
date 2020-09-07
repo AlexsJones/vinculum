@@ -12,18 +12,19 @@ type CommandServerImpl struct{}
 func (CommandServerImpl) Stream(server proto.Command_StreamServer) error {
 
 	for {
-		_, err := server.Recv()
+		inComingCmd, err := server.Recv()
 		if err == io.EOF {
 			return nil
 		}
 		if err != nil {
 			return err
 		}
-		log.Debug("Received incoming command")
+		log.Debugf("Received incoming command %s",inComingCmd.CommandName.String())
+
 
 		if err := server.Send(&proto.CommandAck{
 
-		}); err != nil{
+		}); err != nil {
 			log.Warn(err)
 		}
 

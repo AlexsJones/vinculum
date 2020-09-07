@@ -1,11 +1,12 @@
 syntax = "proto3";
 option go_package = "pkg/proto";
-import "machine.proto";
+import "node.proto";
 package proto;
 
 service Node {
     // Client to leader registration
-    rpc Register(ConnectionSyn) returns (ConnectionAck) {}
+    rpc Register (ConnectionSyn) returns (ConnectionAck) {
+    }
 }
 
 message ConnectionSyn {

@@ -17,25 +17,25 @@ func (ConnectionServerImpl) Register(ctx context.Context, syn *proto.ConnectionS
 	peer, bool := peer.FromContext(ctx)
 	if !bool {
 		return &proto.ConnectionAck{
-			Node: sys.GetLocalNode(),
+			Node:  sys.GetLocalNode(),
 			State: proto.ConnectionAck_Negotiating,
 		}, nil
 	}
 
-	spl := strings.Split(peer.Addr.String(),":")
+	spl := strings.Split(peer.Addr.String(), ":")
 
 	syn.Node.IpAddr = spl[0]
 	syn.Node.Network = peer.Addr.Network()
 
 	if tracker.Instance().Get(syn.Node.Guid) == nil {
 		tracker.Instance().Add(syn.Node)
-		log.Debugf("Added node %s: %v",syn.Node.Guid, syn.Node)
-	}else {
-		log.Debugf("Received UpdateSyn from %s",syn.Node.Guid)
+		log.Debugf("Added node %s: %v", syn.Node.Guid, syn.Node)
+	} else {
+		log.Debugf("Received UpdateSyn from %s", syn.Node.Guid)
 	}
 
 	return &proto.ConnectionAck{
-		Node: sys.GetLocalNode(),
+		Node:  sys.GetLocalNode(),
 		State: proto.ConnectionAck_Known,
 	}, nil
 }

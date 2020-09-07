@@ -4,13 +4,19 @@ package proto;
 
 service Command {
     // Leader to client stream
-    rpc Stream (stream CommandSyn) returns (stream CommandAck) {}
+    rpc Stream (stream CommandSyn) returns (stream CommandAck) {
+    }
+}
+
+enum CommandName {
+    HealthCheck = 0;
 }
 
 message CommandSyn {
-    int64 keepAlive = 1;
+    CommandName commandName = 1;
+    string commandArgs = 2;
 }
 
 message CommandAck {
-
+    string error = 1;
 }

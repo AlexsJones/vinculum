@@ -3,13 +3,15 @@ package impl
 import (
 	"context"
 	"github.com/AlexsJones/vinculum/pkg/proto"
+	"github.com/AlexsJones/vinculum/pkg/types"
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"io"
-	log "github.com/sirupsen/logrus"
 )
 
-func ConnectCommand(tls bool, caFile string, serverAddr string, serverHostOverride string) {
+func ConnectCommand(tls bool, caFile string, serverAddr string,
+	serverHostOverride string, commands []types.Command) {
 
 	var opts []grpc.DialOption
 	if tls {
@@ -53,13 +55,14 @@ func ConnectCommand(tls bool, caFile string, serverAddr string, serverHostOverri
 
 		}
 	}()
-
-	if err := stream.Send(&proto.CommandSyn{
-		KeepAlive: 1,
-	}); err != nil {
-		log.Fatalf("Failed to send UpdateSyn: %v", err)
+	for _, cmd := range commands {
+		if err := stream.Send(&proto.CommandSyn{
+			CommandName: cmd.CommandType,
+			CommandArgs: cmd.Args,
+		}); err != nil {
+			log.Fatalf("Failed to send UpdateSyn: %v", err)
+		}
 	}
-
 	stream.CloseSend()
 	<-waitc
 }

@@ -29,9 +29,9 @@ import (
 )
 
 var (
-	tls bool
-	caFile string
-	serverAddr string
+	tls                bool
+	caFile             string
+	serverAddr         string
 	serverHostOverride string
 )
 
@@ -57,11 +57,12 @@ func commandListener(c chan bool) {
 
 	defer grpcServer.Stop()
 }
+
 // connectCmd represents the connect command
 var connectCmd = &cobra.Command{
 	Use:   "connect",
 	Short: "Connect to another vinculum",
-	Long: ``,
+	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		ctx := make(chan bool)
@@ -72,14 +73,14 @@ var connectCmd = &cobra.Command{
 
 		color.Blue("Starting connection client")
 
-		if _, err := impl.ConnectClient(tls,caFile,serverAddr,serverHostOverride); err != nil {
+		if _, err := impl.ConnectClient(tls, caFile, serverAddr, serverHostOverride); err != nil {
 			log.Fatal(err)
 		}
 
 		for
 		{
-			select  {
-				case msg := <- ctx:
+			select {
+			case msg := <-ctx:
 				if msg {
 					os.Exit(0)
 				}
@@ -90,10 +91,10 @@ var connectCmd = &cobra.Command{
 
 func init() {
 
-	connectCmd.Flags().BoolVarP(&tls,"tls","t",false,"Connection uses TLS if true, else plain TCP")
-	connectCmd.Flags().StringVarP(&caFile,"cafile","c","","The file containing the CA cert file")
-	connectCmd.Flags().StringVarP(&serverAddr,"serverAddr","s","","The server address in the format of host:port")
-	connectCmd.Flags().StringVarP(&serverHostOverride,"serverHostOverride","o","","The server name used to verify the hostname returned by the TLS handshake")
+	connectCmd.Flags().BoolVarP(&tls, "tls", "t", false, "Connection uses TLS if true, else plain TCP")
+	connectCmd.Flags().StringVarP(&caFile, "cafile", "c", "", "The file containing the CA cert file")
+	connectCmd.Flags().StringVarP(&serverAddr, "serverAddr", "s", "", "The server address in the format of host:port")
+	connectCmd.Flags().StringVarP(&serverHostOverride, "serverHostOverride", "o", "", "The server name used to verify the hostname returned by the TLS handshake")
 	rootCmd.AddCommand(connectCmd)
 
 	// Here you will define your flags and configuration settings.

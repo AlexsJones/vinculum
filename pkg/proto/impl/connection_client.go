@@ -9,10 +9,9 @@ import (
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-
 )
 
-func ConnectClient(tls bool, caFile string, serverAddr string, serverHostOverride string) (*proto.ConnectionAck,error) {
+func ConnectClient(tls bool, caFile string, serverAddr string, serverHostOverride string) (*proto.ConnectionAck, error) {
 
 	var opts []grpc.DialOption
 	if tls {
@@ -29,7 +28,7 @@ func ConnectClient(tls bool, caFile string, serverAddr string, serverHostOverrid
 	}
 
 	opts = append(opts, grpc.WithBlock())
-	color.Yellow(fmt.Sprintf("Connecting to %s",serverAddr))
+	color.Yellow(fmt.Sprintf("Connecting to %s", serverAddr))
 	conn, err := grpc.Dial(serverAddr, opts...)
 	if err != nil {
 		log.Fatalf("fail to dial: %v", err)
@@ -38,8 +37,7 @@ func ConnectClient(tls bool, caFile string, serverAddr string, serverHostOverrid
 
 	client := proto.NewNodeClient(conn)
 
-	return client.Register(context.Background(),&proto.ConnectionSyn{
+	return client.Register(context.Background(), &proto.ConnectionSyn{
 		Node: sys.GetLocalNode(),
-
 	})
 }
