@@ -4,7 +4,7 @@ package proto;
 
 service Command {
     // Leader to client stream
-    rpc Stream (stream CommandSyn) returns (stream CommandAck) {
+    rpc Send (CommandSyn) returns (CommandAck) {
     }
 }
 
@@ -18,5 +18,7 @@ message CommandSyn {
 }
 
 message CommandAck {
-    string error = 1;
+    CommandName commandName = 1;
+    string error = 2;
+
 }

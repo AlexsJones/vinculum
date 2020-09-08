@@ -13,11 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package cmd
+package leader
 
 import (
 	"fmt"
+
 	"github.com/AlexsJones/vinculum/pkg/config"
+	"github.com/AlexsJones/vinculum/pkg/leader"
 	"github.com/AlexsJones/vinculum/pkg/proto"
 	"github.com/AlexsJones/vinculum/pkg/proto/impl"
 	"github.com/fatih/color"
@@ -25,7 +27,6 @@ import (
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"net"
-	"os"
 )
 
 var (
@@ -35,75 +36,57 @@ var (
 	serverHostOverride string
 )
 
-func commandListener(c chan bool) {
-	lis, err := net.Listen("tcp", config.DefaultGRPCommandListeningAddr)
+func listen() {
+
+	lis, err := net.Listen("tcp", config.DefaultGRPCConnectListeningAddr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	commsServer := impl.CommandServerImpl{}
+	commsServer := impl.ConnectionServerImpl{}
 	grpcServer := grpc.NewServer()
 
-	proto.RegisterCommandServer(grpcServer, commsServer)
+	proto.RegisterNodeServer(grpcServer, commsServer)
 
-	color.Blue(fmt.Sprintf("Starting GRPC server for commands on %s", config.DefaultGRPCommandListeningAddr))
+	color.Blue(fmt.Sprintf("Starting GRPC leader for registering on %s", config.DefaultGRPCConnectListeningAddr))
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 
 	}
-
-	c <- true
-
 	defer grpcServer.Stop()
+
 }
 
-// connectCmd represents the connect command
-var connectCmd = &cobra.Command{
-	Use:   "connect",
-	Short: "Connect to another vinculum",
+// listenCmd represents the listen command
+var listenCmd = &cobra.Command{
+	Use:   "listen",
+	Short: "Run the listener leader",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		ctx := make(chan bool)
+		go listen()
 
-		color.Blue("Starting command listener")
-
-		go commandListener(ctx)
-
-		color.Blue("Starting connection client")
-
-		if _, err := impl.ConnectClient(tls, caFile, serverAddr, serverHostOverride); err != nil {
+		if err := leader.Run(tls, caFile, serverAddr); err != nil {
 			log.Fatal(err)
-		}
-
-		for
-		{
-			select {
-			case msg := <-ctx:
-				if msg {
-					os.Exit(0)
-				}
-			}
 		}
 	},
 }
 
 func init() {
 
-	connectCmd.Flags().BoolVarP(&tls, "tls", "t", false, "Connection uses TLS if true, else plain TCP")
-	connectCmd.Flags().StringVarP(&caFile, "cafile", "c", "", "The file containing the CA cert file")
-	connectCmd.Flags().StringVarP(&serverAddr, "serverAddr", "s", "", "The server address in the format of host:port")
-	connectCmd.Flags().StringVarP(&serverHostOverride, "serverHostOverride", "o", "", "The server name used to verify the hostname returned by the TLS handshake")
-	rootCmd.AddCommand(connectCmd)
+	listenCmd.Flags().BoolVarP(&tls, "tls", "t", false, "Connection uses TLS if true, else plain TCP")
+	listenCmd.Flags().StringVarP(&caFile, "cafile", "c", "", "The file containing the CA cert file")
+	listenCmd.Flags().StringVarP(&serverAddr, "serverAddr", "s", "", "The leader address in the format of host:port")
+	listenCmd.Flags().StringVarP(&serverHostOverride, "serverHostOverride", "o", "", "The leader name used to verify the hostname returned by the TLS handshake")
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// connectCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// listenCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// connectCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// listenCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

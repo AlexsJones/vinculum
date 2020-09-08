@@ -132,7 +132,8 @@ type CommandAck struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Error string `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
+	CommandName CommandName `protobuf:"varint,1,opt,name=commandName,proto3,enum=proto.CommandName" json:"commandName,omitempty"`
+	Error       string      `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
 }
 
 func (x *CommandAck) Reset() {
@@ -167,6 +168,13 @@ func (*CommandAck) Descriptor() ([]byte, []int) {
 	return file_command_proto_rawDescGZIP(), []int{1}
 }
 
+func (x *CommandAck) GetCommandName() CommandName {
+	if x != nil {
+		return x.CommandName
+	}
+	return CommandName_HealthCheck
+}
+
 func (x *CommandAck) GetError() string {
 	if x != nil {
 		return x.Error
@@ -184,16 +192,19 @@ var file_command_proto_rawDesc = []byte{
 	0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x0b, 0x63,
 	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x6f,
 	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x72, 0x67, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x72, 0x67, 0x73, 0x22, 0x22, 0x0a, 0x0a,
-	0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x63, 0x6b, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x72,
-	0x72, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72,
-	0x2a, 0x1e, 0x0a, 0x0b, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x12,
-	0x0f, 0x0a, 0x0b, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x10, 0x00,
-	0x32, 0x3f, 0x0a, 0x07, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x34, 0x0a, 0x06, 0x53,
-	0x74, 0x72, 0x65, 0x61, 0x6d, 0x12, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f,
-	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x53, 0x79, 0x6e, 0x1a, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x63, 0x6b, 0x22, 0x00, 0x28, 0x01, 0x30,
-	0x01, 0x42, 0x0b, 0x5a, 0x09, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06,
+	0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x72, 0x67, 0x73, 0x22, 0x58, 0x0a, 0x0a,
+	0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x63, 0x6b, 0x12, 0x34, 0x0a, 0x0b, 0x63, 0x6f,
+	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e,
+	0x61, 0x6d, 0x65, 0x52, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d, 0x65,
+	0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x2a, 0x1e, 0x0a, 0x0b, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
+	0x64, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x0f, 0x0a, 0x0b, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x43,
+	0x68, 0x65, 0x63, 0x6b, 0x10, 0x00, 0x32, 0x39, 0x0a, 0x07, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
+	0x64, 0x12, 0x2e, 0x0a, 0x04, 0x53, 0x65, 0x6e, 0x64, 0x12, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x53, 0x79, 0x6e, 0x1a, 0x11, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x63, 0x6b, 0x22,
+	0x00, 0x42, 0x0b, 0x5a, 0x09, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
@@ -218,13 +229,14 @@ var file_command_proto_goTypes = []interface{}{
 }
 var file_command_proto_depIdxs = []int32{
 	0, // 0: proto.CommandSyn.commandName:type_name -> proto.CommandName
-	1, // 1: proto.Command.Stream:input_type -> proto.CommandSyn
-	2, // 2: proto.Command.Stream:output_type -> proto.CommandAck
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // 1: proto.CommandAck.commandName:type_name -> proto.CommandName
+	1, // 2: proto.Command.Send:input_type -> proto.CommandSyn
+	2, // 3: proto.Command.Send:output_type -> proto.CommandAck
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_command_proto_init() }
@@ -292,7 +304,7 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type CommandClient interface {
 	// Leader to client stream
-	Stream(ctx context.Context, opts ...grpc.CallOption) (Command_StreamClient, error)
+	Send(ctx context.Context, in *CommandSyn, opts ...grpc.CallOption) (*CommandAck, error)
 }
 
 type commandClient struct {
@@ -303,92 +315,60 @@ func NewCommandClient(cc grpc.ClientConnInterface) CommandClient {
 	return &commandClient{cc}
 }
 
-func (c *commandClient) Stream(ctx context.Context, opts ...grpc.CallOption) (Command_StreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Command_serviceDesc.Streams[0], "/proto.Command/Stream", opts...)
+func (c *commandClient) Send(ctx context.Context, in *CommandSyn, opts ...grpc.CallOption) (*CommandAck, error) {
+	out := new(CommandAck)
+	err := c.cc.Invoke(ctx, "/proto.Command/Send", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &commandStreamClient{stream}
-	return x, nil
-}
-
-type Command_StreamClient interface {
-	Send(*CommandSyn) error
-	Recv() (*CommandAck, error)
-	grpc.ClientStream
-}
-
-type commandStreamClient struct {
-	grpc.ClientStream
-}
-
-func (x *commandStreamClient) Send(m *CommandSyn) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *commandStreamClient) Recv() (*CommandAck, error) {
-	m := new(CommandAck)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // CommandServer is the server API for Command service.
 type CommandServer interface {
 	// Leader to client stream
-	Stream(Command_StreamServer) error
+	Send(context.Context, *CommandSyn) (*CommandAck, error)
 }
 
 // UnimplementedCommandServer can be embedded to have forward compatible implementations.
 type UnimplementedCommandServer struct {
 }
 
-func (*UnimplementedCommandServer) Stream(Command_StreamServer) error {
-	return status.Errorf(codes.Unimplemented, "method Stream not implemented")
+func (*UnimplementedCommandServer) Send(context.Context, *CommandSyn) (*CommandAck, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Send not implemented")
 }
 
 func RegisterCommandServer(s *grpc.Server, srv CommandServer) {
 	s.RegisterService(&_Command_serviceDesc, srv)
 }
 
-func _Command_Stream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(CommandServer).Stream(&commandStreamServer{stream})
-}
-
-type Command_StreamServer interface {
-	Send(*CommandAck) error
-	Recv() (*CommandSyn, error)
-	grpc.ServerStream
-}
-
-type commandStreamServer struct {
-	grpc.ServerStream
-}
-
-func (x *commandStreamServer) Send(m *CommandAck) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *commandStreamServer) Recv() (*CommandSyn, error) {
-	m := new(CommandSyn)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
+func _Command_Send_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommandSyn)
+	if err := dec(in); err != nil {
 		return nil, err
 	}
-	return m, nil
+	if interceptor == nil {
+		return srv.(CommandServer).Send(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Command/Send",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommandServer).Send(ctx, req.(*CommandSyn))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Command_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "proto.Command",
 	HandlerType: (*CommandServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams: []grpc.StreamDesc{
+	Methods: []grpc.MethodDesc{
 		{
-			StreamName:    "Stream",
-			Handler:       _Command_Stream_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
+			MethodName: "Send",
+			Handler:    _Command_Send_Handler,
 		},
 	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "command.proto",
 }

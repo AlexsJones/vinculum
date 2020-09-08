@@ -7,11 +7,11 @@ import (
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"io"
+	"time"
 )
 
-func ConnectCommand(tls bool, caFile string, serverAddr string,
-	serverHostOverride string, commands []types.Command) {
+func SendCommand(tls bool, caFile string, serverAddr string,
+	serverHostOverride string, commands types.Command) {
 
 	var opts []grpc.DialOption
 	if tls {
@@ -27,8 +27,11 @@ func ConnectCommand(tls bool, caFile string, serverAddr string,
 		opts = append(opts, grpc.WithInsecure())
 	}
 
+	clientDeadline := time.Now().Add(time.Duration(time.Second * 5))
+	ctx, _ := context.WithDeadline(context.Background(), clientDeadline)
+
 	opts = append(opts, grpc.WithBlock())
-	conn, err := grpc.Dial(serverAddr, opts...)
+	conn, err := grpc.DialContext(ctx,serverAddr, opts...)
 	if err != nil {
 		log.Fatalf("fail to dial: %v", err)
 	}
@@ -36,33 +39,15 @@ func ConnectCommand(tls bool, caFile string, serverAddr string,
 
 	client := proto.NewCommandClient(conn)
 
-	stream, err := client.Stream(context.Background())
+	commandAck, err := client.Send(ctx,&proto.CommandSyn{
+		CommandName: commands.CommandType,
+		CommandArgs: commands.Args,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	waitc := make(chan struct{})
-	go func() {
-		for {
-			_, err := stream.Recv()
-			if err == io.EOF {
-				// read done.
-				close(waitc)
-				return
-			}
-			if err != nil {
-				log.Fatalf("Failed to receive an UpdateSyn : %v", err)
-			}
-
-		}
-	}()
-	for _, cmd := range commands {
-		if err := stream.Send(&proto.CommandSyn{
-			CommandName: cmd.CommandType,
-			CommandArgs: cmd.Args,
-		}); err != nil {
-			log.Fatalf("Failed to send UpdateSyn: %v", err)
-		}
+	if commandAck.Error != "" {
+		log.Warnf("%s sent error %s for command %s",serverAddr,commandAck.Error,commandAck.CommandName)
 	}
-	stream.CloseSend()
-	<-waitc
+
 }

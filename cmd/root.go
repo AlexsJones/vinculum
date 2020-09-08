@@ -17,6 +17,8 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/AlexsJones/vinculum/cmd/follower"
+	"github.com/AlexsJones/vinculum/cmd/leader"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 	"os"
@@ -49,6 +51,8 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
+	rootCmd.AddCommand(leader.LeaderCmd)
+	rootCmd.AddCommand(follower.FollowerCmd)
 	// App specific setup
 	guid := uuid.New()
 	viper.Set("vinculum-guid", guid.String())

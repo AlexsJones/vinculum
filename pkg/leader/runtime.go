@@ -1,4 +1,4 @@
-package pkg
+package leader
 
 import (
 	"fmt"
@@ -12,9 +12,9 @@ import (
 	"time"
 )
 
-func RuntimeStart(tls bool, caFile string, serverHostOverride string) error {
+func Run(tls bool, caFile string, serverHostOverride string) error {
 	r := rand.Intn(5)
-	// Listening server started, the main command loop will send commands
+	// Listening leader started, the main command loop will send commands
 	for {
 		if tracker.Instance().Count() < 1 {
 
@@ -26,10 +26,14 @@ func RuntimeStart(tls bool, caFile string, serverHostOverride string) error {
 			serverAdd := fmt.Sprintf("%s%s", node.IpAddr, config.DefaultGRPCommandListeningAddr)
 			color.Yellow("Sending command to %s@%s", node.Guid, serverAdd)
 
-			impl.ConnectCommand(tls, caFile, serverAdd, serverHostOverride, []types.Command{
-				{CommandType: proto.CommandName_HealthCheck,
-					Args: ""},
+			impl.SendCommand(tls,
+				caFile, serverAdd,
+				serverHostOverride,
+				types.Command{
+				CommandType: proto.CommandName_HealthCheck,
+					Args: "",
 			})
+
 			color.Blue("Sent")
 		}
 
