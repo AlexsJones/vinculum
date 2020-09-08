@@ -7,6 +7,12 @@ message NodeConfig {
     SystemInfo systemInfo = 2;
     string IpAddr = 3;
     string Network = 4;
+    enum State {
+        Unknown = 0;
+        Alive = 1;
+        Unresponsive = 2;
+    }
+    State state = 5;
 }
 
 message SystemInfo {
