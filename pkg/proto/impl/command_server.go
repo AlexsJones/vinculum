@@ -15,7 +15,7 @@ func (CommandServerImpl) Send(ctx context.Context, syn *proto.CommandSyn) (*prot
 
 
 	return &proto.CommandAck{
-		Error: nil,
+		Error: "",
 		CommandName: syn.CommandName,
 	}, nil
 }
