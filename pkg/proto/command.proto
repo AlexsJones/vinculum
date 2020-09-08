@@ -19,6 +19,7 @@ message CommandSyn {
 
 message CommandAck {
     CommandName commandName = 1;
-    string error = 2;
+    string response =2;
+    string error = 3;
 
 }
