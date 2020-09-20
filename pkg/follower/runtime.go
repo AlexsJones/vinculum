@@ -2,12 +2,12 @@ package follower
 
 import "github.com/AlexsJones/vinculum/pkg/proto"
 
-func Runtime(syn *proto.CommandSyn)(*proto.CommandAck, error ){
+func Runtime(syn *proto.CommandSyn) (*proto.CommandAck, error) {
 
 	var err error
 	returnPayload := &proto.CommandAck{
-		Error: "",
-		Response: "",
+		Error:       "",
+		Response:    "",
 		CommandName: syn.CommandName,
 	}
 
@@ -16,8 +16,6 @@ func Runtime(syn *proto.CommandSyn)(*proto.CommandAck, error ){
 		returnPayload.Response = "OK"
 		break
 	}
-
-
 
 	return returnPayload, err
 }
