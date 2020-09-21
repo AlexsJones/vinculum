@@ -1,6 +1,6 @@
 VERSION=`cat VERSION`
 all:
-	gox -output="build/vinculum_{{.OS}}_{{.Arch}}" -os="linux"
+	gox -output="build/vinculum_{{.OS}}_{{.Arch}}" -os="linux" -osarch="darwin/amd64"
 release:
 	git tag v${VERSION} 
 	git push --tags
