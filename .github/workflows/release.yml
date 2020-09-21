@@ -31,7 +31,7 @@ jobs:
       - name: Build
         run: |
           GOBIN=$PWD/bin go install github.com/mitchellh/gox
-          ./bin/gox -output="build/vinculum_{{.OS}}_{{.Arch}}" -os="linux"
+          ./bin/gox -output="build/vinculum_{{.OS}}_{{.Arch}}" -os="linux" -osarch="darwin/amd64"
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
