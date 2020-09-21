@@ -4,6 +4,20 @@ APP="vinculum"
 REPO_NAME="AlexsJones/${APP}"
 GITHUB_URL="https://github.com/$REPO_NAME/releases"
 BIN_DIR="/usr/local/bin"
+# --- helper functions for logs ---
+info()
+{
+  echo '[INFO] ' "$@"
+}
+warn()
+{
+  echo '[WARN] ' "$@" >&2
+}
+fatal()
+{
+  echo '[ERROR] ' "$@" >&2
+  exit 1
+}
 lastversion() {
   case $DOWNLOADER in
     curl)
@@ -23,7 +37,7 @@ lastversion() {
 
     # Abort if download command failed
     [ $? -eq 0 ] || fatal 'Download failed'
-  }
+}
 
 # --- create temporary directory and cleanup when done ---
 setup_tmp() {
@@ -37,10 +51,10 @@ setup_tmp() {
     exit $code
   }
 if [ -z "$DEBUG" ] 
-  then 
-    trap cleanup INT EXIT
-  else 
-    echo "ignoring deletion in debug mode of $TMP_DIR"
+then 
+  trap cleanup INT EXIT
+else 
+  echo "ignoring deletion in debug mode of $TMP_DIR"
 fi
 }
 
@@ -50,32 +64,26 @@ download() {
 
   case $DOWNLOADER in
     curl)
-      curl -o $1 -sfL $2 --output /dev/stderr --write-out "%{http_code}"
-      if [[ "$http_code" -ne 200 ]] ; then
-        echo "$http_code"
-        exit 1
-      fi
+      curl -o $1 -sfL $2
       ;;
     wget)
-      status_code=$(wget -qO $1 $2 --server-response 2>&1 | awk '/^  HTTP/{print $2}')
-      if [[ "$status_code" -ne 200 ]] ; then
-        echo "$status_code"
-        exit 1
-      fi
+      wget -qO $1 $2
       ;;
     *)
       fatal "Incorrect executable '$DOWNLOADER'"
       ;;
   esac
 
+    [ $? -eq 0 ] || fatal 'Download failed'
     # Abort if download command failed
   }
 
 # --- download binary from github url ---
 download_binary() {
-  BIN_URL=${GITHUB_URL}/download/${LATEST_VERSION}/${APP}_${OS}_${ARCH}
-  echo "Downloading binary ${BIN_URL}"
-  download ${TMP_BIN} ${BIN_URL}
+  BIN_URL="${GITHUB_URL}/download/${LATEST_VERSION}/${APP}_${OS}_${ARCH}"
+  echo "Fetching ${BIN_URL}"
+  download "${TMP_BIN}" "${BIN_URL}"
+  echo "Downloaded ${BIN_URL} to ${TMP_BIN}"
 }
 
 setup_verify_os() {
@@ -98,7 +106,6 @@ setup_verify_os() {
       printf 'unknown\n'
       ;;
   esac
-  echo "${OS}"
 }
 setup_verify_arch() {
   if [ -z "$ARCH" ]; then
@@ -130,7 +137,6 @@ setup_verify_arch() {
     *)
       fatal "Unsupported architecture $ARCH"
   esac
-  echo "${ARCH}"
 }
 # --- verify existence of network downloader executable ---
 verify_downloader() {
@@ -143,11 +149,12 @@ verify_downloader() {
   }
 
 setup_binary() {
-
+  echo "Setting up binary"
   chmod 755 ${TMP_BIN}
   echo "Installing ${APP} to ${BIN_DIR}/${APP}"
   $SUDO chown $(whoami) ${TMP_BIN}
   $SUDO mv -f "${TMP_BIN}" "${BIN_DIR}/${APP}"
+  echo "Moving ${TMP_BIN} to ${BIN_DIR}/${APP}"
 }
 
 setup_env() {
