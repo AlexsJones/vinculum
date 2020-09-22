@@ -32,14 +32,14 @@ func Run(tls bool, caFile string, serverHostOverride string) error {
 			}
 
 			serverAdd := fmt.Sprintf("%s%s", node.IpAddr, config.DefaultGRPCommandListeningAddr)
-			color.Yellow("Sending %s command to %s@%s", proto.CommandName_HealthCheck.String(), node.Guid, serverAdd)
+			color.Yellow("Sending %s command to %s@%s", proto.CheckName_HealthCheck.String(), node.Guid, serverAdd)
 
 			ctx, _ := context.WithDeadline(context.Background(), time.Now().Add(time.Duration(time.Second * 2)))
 			err := impl.SendCommand(tls,
 				caFile, serverAdd,
 				serverHostOverride,
-				types.Command{
-				CommandType: proto.CommandName_HealthCheck,
+				types.SyncCommand{
+				CommandType: proto.CheckName_HealthCheck,
 					Args: "",
 					Context: ctx,
 			})

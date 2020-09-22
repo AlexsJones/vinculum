@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,11 +17,13 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+
+	"github.com/AlexsJones/vinculum/cmd/ctl"
 	"github.com/AlexsJones/vinculum/cmd/follower"
 	"github.com/AlexsJones/vinculum/cmd/leader"
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
-	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
@@ -53,6 +55,7 @@ func init() {
 
 	rootCmd.AddCommand(leader.LeaderCmd)
 	rootCmd.AddCommand(follower.FollowerCmd)
+	rootCmd.AddCommand(ctl.CtlCmd)
 	// App specific setup
 	guid := uuid.New()
 	viper.Set("vinculum-guid", guid.String())

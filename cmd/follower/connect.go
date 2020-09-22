@@ -35,18 +35,18 @@ var (
 	serverHostOverride string
 )
 
-func commandListener(c chan bool) {
+func syncListener(c chan bool) {
 	lis, err := net.Listen("tcp", config.DefaultGRPCommandListeningAddr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	commsServer := impl.CommandServerImpl{}
+	commsServer := impl.SyncServerImpl{}
 	grpcServer := grpc.NewServer()
 
-	proto.RegisterCommandServer(grpcServer, commsServer)
+	proto.RegisterSyncServer(grpcServer, commsServer)
 
-	color.Blue(fmt.Sprintf("Starting GRPC leader for commands on %s", config.DefaultGRPCommandListeningAddr))
+	color.Blue(fmt.Sprintf("Starting GRPC listener for commands on %s", config.DefaultGRPCommandListeningAddr))
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)
@@ -67,11 +67,11 @@ var connectCmd = &cobra.Command{
 
 		ctx := make(chan bool)
 
-		color.Blue("Starting command listener")
+		color.Blue("Starting sync listener")
 
-		go commandListener(ctx)
+		go syncListener(ctx)
 
-		color.Blue("Starting connection client")
+		color.Blue("Starting node client")
 
 		if _, err := impl.ConnectClient(tls, caFile, serverAddr, serverHostOverride); err != nil {
 			log.Fatal(err)
@@ -93,7 +93,7 @@ func init() {
 
 	connectCmd.Flags().BoolVarP(&tls, "tls", "t", false, "Connection uses TLS if true, else plain TCP")
 	connectCmd.Flags().StringVarP(&caFile, "cafile", "c", "", "The file containing the CA cert file")
-	connectCmd.Flags().StringVarP(&serverAddr, "serverAddr", "s", "", "The leader address in the format of host:port")
+	connectCmd.Flags().StringVarP(&serverAddr, "serverAddr", "s", "localhost:7559", "The leader address in the format of host:port will default to localhost:7559	")
 	connectCmd.Flags().StringVarP(&serverHostOverride, "serverHostOverride", "o", "", "The leader name used to verify the hostname returned by the TLS handshake")
 
 

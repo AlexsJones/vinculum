@@ -9,9 +9,9 @@ import (
 )
 
 
-type CommandServerImpl struct{}
+type SyncServerImpl struct{}
 
-func (CommandServerImpl) Send(ctx context.Context, syn *proto.CommandSyn) (*proto.CommandAck, error) {
+func (SyncServerImpl) Send(ctx context.Context, syn *proto.SyncSyn) (*proto.SyncAck, error) {
 
 	peer,ok := peer.FromContext(ctx)
 	if ok {

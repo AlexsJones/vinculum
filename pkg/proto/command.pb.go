@@ -29,60 +29,16 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-type CommandName int32
-
-const (
-	CommandName_HealthCheck CommandName = 0
-)
-
-// Enum value maps for CommandName.
-var (
-	CommandName_name = map[int32]string{
-		0: "HealthCheck",
-	}
-	CommandName_value = map[string]int32{
-		"HealthCheck": 0,
-	}
-)
-
-func (x CommandName) Enum() *CommandName {
-	p := new(CommandName)
-	*p = x
-	return p
-}
-
-func (x CommandName) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (CommandName) Descriptor() protoreflect.EnumDescriptor {
-	return file_command_proto_enumTypes[0].Descriptor()
-}
-
-func (CommandName) Type() protoreflect.EnumType {
-	return &file_command_proto_enumTypes[0]
-}
-
-func (x CommandName) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use CommandName.Descriptor instead.
-func (CommandName) EnumDescriptor() ([]byte, []int) {
-	return file_command_proto_rawDescGZIP(), []int{0}
-}
-
-type CommandSyn struct {
+type Input struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	CommandName CommandName `protobuf:"varint,1,opt,name=commandName,proto3,enum=proto.CommandName" json:"commandName,omitempty"`
-	CommandArgs string      `protobuf:"bytes,2,opt,name=commandArgs,proto3" json:"commandArgs,omitempty"`
+	Command string `protobuf:"bytes,1,opt,name=command,proto3" json:"command,omitempty"`
 }
 
-func (x *CommandSyn) Reset() {
-	*x = CommandSyn{}
+func (x *Input) Reset() {
+	*x = Input{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_command_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -90,13 +46,13 @@ func (x *CommandSyn) Reset() {
 	}
 }
 
-func (x *CommandSyn) String() string {
+func (x *Input) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CommandSyn) ProtoMessage() {}
+func (*Input) ProtoMessage() {}
 
-func (x *CommandSyn) ProtoReflect() protoreflect.Message {
+func (x *Input) ProtoReflect() protoreflect.Message {
 	mi := &file_command_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -108,37 +64,28 @@ func (x *CommandSyn) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CommandSyn.ProtoReflect.Descriptor instead.
-func (*CommandSyn) Descriptor() ([]byte, []int) {
+// Deprecated: Use Input.ProtoReflect.Descriptor instead.
+func (*Input) Descriptor() ([]byte, []int) {
 	return file_command_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CommandSyn) GetCommandName() CommandName {
+func (x *Input) GetCommand() string {
 	if x != nil {
-		return x.CommandName
-	}
-	return CommandName_HealthCheck
-}
-
-func (x *CommandSyn) GetCommandArgs() string {
-	if x != nil {
-		return x.CommandArgs
+		return x.Command
 	}
 	return ""
 }
 
-type CommandAck struct {
+type Update struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	CommandName CommandName `protobuf:"varint,1,opt,name=commandName,proto3,enum=proto.CommandName" json:"commandName,omitempty"`
-	Response    string      `protobuf:"bytes,2,opt,name=response,proto3" json:"response,omitempty"`
-	Error       string      `protobuf:"bytes,3,opt,name=error,proto3" json:"error,omitempty"`
+	Error string `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
 }
 
-func (x *CommandAck) Reset() {
-	*x = CommandAck{}
+func (x *Update) Reset() {
+	*x = Update{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_command_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -146,13 +93,13 @@ func (x *CommandAck) Reset() {
 	}
 }
 
-func (x *CommandAck) String() string {
+func (x *Update) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CommandAck) ProtoMessage() {}
+func (*Update) ProtoMessage() {}
 
-func (x *CommandAck) ProtoReflect() protoreflect.Message {
+func (x *Update) ProtoReflect() protoreflect.Message {
 	mi := &file_command_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -164,26 +111,12 @@ func (x *CommandAck) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CommandAck.ProtoReflect.Descriptor instead.
-func (*CommandAck) Descriptor() ([]byte, []int) {
+// Deprecated: Use Update.ProtoReflect.Descriptor instead.
+func (*Update) Descriptor() ([]byte, []int) {
 	return file_command_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CommandAck) GetCommandName() CommandName {
-	if x != nil {
-		return x.CommandName
-	}
-	return CommandName_HealthCheck
-}
-
-func (x *CommandAck) GetResponse() string {
-	if x != nil {
-		return x.Response
-	}
-	return ""
-}
-
-func (x *CommandAck) GetError() string {
+func (x *Update) GetError() string {
 	if x != nil {
 		return x.Error
 	}
@@ -194,26 +127,14 @@ var File_command_proto protoreflect.FileDescriptor
 
 var file_command_proto_rawDesc = []byte{
 	0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
-	0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x64, 0x0a, 0x0a, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
-	0x64, 0x53, 0x79, 0x6e, 0x12, 0x34, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e,
-	0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x0b, 0x63,
-	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x6f,
-	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x72, 0x67, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x72, 0x67, 0x73, 0x22, 0x74, 0x0a, 0x0a,
-	0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x63, 0x6b, 0x12, 0x34, 0x0a, 0x0b, 0x63, 0x6f,
-	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
-	0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e,
-	0x61, 0x6d, 0x65, 0x52, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d, 0x65,
-	0x12, 0x1a, 0x0a, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05,
-	0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72,
-	0x6f, 0x72, 0x2a, 0x1e, 0x0a, 0x0b, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4e, 0x61, 0x6d,
-	0x65, 0x12, 0x0f, 0x0a, 0x0b, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x43, 0x68, 0x65, 0x63, 0x6b,
-	0x10, 0x00, 0x32, 0x39, 0x0a, 0x07, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x2e, 0x0a,
-	0x04, 0x53, 0x65, 0x6e, 0x64, 0x12, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f,
-	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x53, 0x79, 0x6e, 0x1a, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x63, 0x6b, 0x22, 0x00, 0x42, 0x0b, 0x5a,
+	0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x21, 0x0a, 0x05, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x12,
+	0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x22, 0x1e, 0x0a, 0x06, 0x55, 0x70, 0x64,
+	0x61, 0x74, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x32, 0x32, 0x0a, 0x07, 0x43, 0x6f, 0x6d,
+	0x6d, 0x61, 0x6e, 0x64, 0x12, 0x27, 0x0a, 0x04, 0x53, 0x65, 0x6e, 0x64, 0x12, 0x0c, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x1a, 0x0d, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x22, 0x00, 0x30, 0x01, 0x42, 0x0b, 0x5a,
 	0x09, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x33,
 }
@@ -230,23 +151,19 @@ func file_command_proto_rawDescGZIP() []byte {
 	return file_command_proto_rawDescData
 }
 
-var file_command_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_command_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_command_proto_goTypes = []interface{}{
-	(CommandName)(0),   // 0: proto.CommandName
-	(*CommandSyn)(nil), // 1: proto.CommandSyn
-	(*CommandAck)(nil), // 2: proto.CommandAck
+	(*Input)(nil),  // 0: proto.Input
+	(*Update)(nil), // 1: proto.Update
 }
 var file_command_proto_depIdxs = []int32{
-	0, // 0: proto.CommandSyn.commandName:type_name -> proto.CommandName
-	0, // 1: proto.CommandAck.commandName:type_name -> proto.CommandName
-	1, // 2: proto.Command.Send:input_type -> proto.CommandSyn
-	2, // 3: proto.Command.Send:output_type -> proto.CommandAck
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0, // 0: proto.Command.Send:input_type -> proto.Input
+	1, // 1: proto.Command.Send:output_type -> proto.Update
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_command_proto_init() }
@@ -256,7 +173,7 @@ func file_command_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_command_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CommandSyn); i {
+			switch v := v.(*Input); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -268,7 +185,7 @@ func file_command_proto_init() {
 			}
 		}
 		file_command_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CommandAck); i {
+			switch v := v.(*Update); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -285,14 +202,13 @@ func file_command_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_command_proto_rawDesc,
-			NumEnums:      1,
+			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_command_proto_goTypes,
 		DependencyIndexes: file_command_proto_depIdxs,
-		EnumInfos:         file_command_proto_enumTypes,
 		MessageInfos:      file_command_proto_msgTypes,
 	}.Build()
 	File_command_proto = out.File
@@ -313,8 +229,7 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type CommandClient interface {
-	// Leader to client stream
-	Send(ctx context.Context, in *CommandSyn, opts ...grpc.CallOption) (*CommandAck, error)
+	Send(ctx context.Context, in *Input, opts ...grpc.CallOption) (Command_SendClient, error)
 }
 
 type commandClient struct {
@@ -325,60 +240,86 @@ func NewCommandClient(cc grpc.ClientConnInterface) CommandClient {
 	return &commandClient{cc}
 }
 
-func (c *commandClient) Send(ctx context.Context, in *CommandSyn, opts ...grpc.CallOption) (*CommandAck, error) {
-	out := new(CommandAck)
-	err := c.cc.Invoke(ctx, "/proto.Command/Send", in, out, opts...)
+func (c *commandClient) Send(ctx context.Context, in *Input, opts ...grpc.CallOption) (Command_SendClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Command_serviceDesc.Streams[0], "/proto.Command/Send", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &commandSendClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Command_SendClient interface {
+	Recv() (*Update, error)
+	grpc.ClientStream
+}
+
+type commandSendClient struct {
+	grpc.ClientStream
+}
+
+func (x *commandSendClient) Recv() (*Update, error) {
+	m := new(Update)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // CommandServer is the server API for Command service.
 type CommandServer interface {
-	// Leader to client stream
-	Send(context.Context, *CommandSyn) (*CommandAck, error)
+	Send(*Input, Command_SendServer) error
 }
 
 // UnimplementedCommandServer can be embedded to have forward compatible implementations.
 type UnimplementedCommandServer struct {
 }
 
-func (*UnimplementedCommandServer) Send(context.Context, *CommandSyn) (*CommandAck, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Send not implemented")
+func (*UnimplementedCommandServer) Send(*Input, Command_SendServer) error {
+	return status.Errorf(codes.Unimplemented, "method Send not implemented")
 }
 
 func RegisterCommandServer(s *grpc.Server, srv CommandServer) {
 	s.RegisterService(&_Command_serviceDesc, srv)
 }
 
-func _Command_Send_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CommandSyn)
-	if err := dec(in); err != nil {
-		return nil, err
+func _Command_Send_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(Input)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(CommandServer).Send(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Command/Send",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CommandServer).Send(ctx, req.(*CommandSyn))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(CommandServer).Send(m, &commandSendServer{stream})
+}
+
+type Command_SendServer interface {
+	Send(*Update) error
+	grpc.ServerStream
+}
+
+type commandSendServer struct {
+	grpc.ServerStream
+}
+
+func (x *commandSendServer) Send(m *Update) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 var _Command_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "proto.Command",
 	HandlerType: (*CommandServer)(nil),
-	Methods: []grpc.MethodDesc{
+	Methods:     []grpc.MethodDesc{},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "Send",
-			Handler:    _Command_Send_Handler,
+			StreamName:    "Send",
+			Handler:       _Command_Send_Handler,
+			ServerStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "command.proto",
 }

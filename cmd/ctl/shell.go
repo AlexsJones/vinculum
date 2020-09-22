@@ -13,32 +13,45 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package follower
+package ctl
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/spf13/cobra"
 )
 
-// followerCmd represents the follower command
-var FollowerCmd = &cobra.Command{
-	Use:   "follower",
-	Short: "",
-	Long: ``,
+// shellCmd represents the shell command
+var (
+	inputCommand string
+)
+var shellCmd = &cobra.Command{
+	Use:   "shell",
+	Short: "Run remote shell commands",
+	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+
+		fmt.Printf("Running command %s", inputCommand)
+
 	},
 }
 
 func init() {
-	FollowerCmd.AddCommand(connectCmd)
+
+	shellCmd.Flags().StringVarP(&inputCommand, "command", "c", "", "Command to send to followers")
+	if err := shellCmd.MarkFlagRequired("command"); err != nil {
+		log.Fatal(err)
+	}
+	CtlCmd.AddCommand(shellCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// followerCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// shellCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// followerCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// shellCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

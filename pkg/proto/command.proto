@@ -3,23 +3,14 @@ option go_package = "pkg/proto";
 package proto;
 
 service Command {
-    // Leader to client stream
-    rpc Send (CommandSyn) returns (CommandAck) {
+    rpc Send (Input) returns (stream Update) {
     }
 }
 
-enum CommandName {
-    HealthCheck = 0;
+message Input {
+    string command = 1;
 }
 
-message CommandSyn {
-    CommandName commandName = 1;
-    string commandArgs = 2;
-}
-
-message CommandAck {
-    CommandName commandName = 1;
-    string response =2;
-    string error = 3;
-
+message Update {
+    string error = 1;
 }

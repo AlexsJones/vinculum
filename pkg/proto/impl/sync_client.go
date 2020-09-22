@@ -11,7 +11,7 @@ import (
 )
 
 func SendCommand(tls bool, caFile string, serverAddr string,
-	serverHostOverride string, command types.Command) error {
+	serverHostOverride string, command types.SyncCommand) error {
 
 	var opts []grpc.DialOption
 	if tls {
@@ -34,9 +34,9 @@ func SendCommand(tls bool, caFile string, serverAddr string,
 	}
 	defer conn.Close()
 
-	client := proto.NewCommandClient(conn)
+	client := proto.NewSyncClient(conn)
 
-	commandAck, err := client.Send(command.Context,&proto.CommandSyn{
+	commandAck, err := client.Send(command.Context,&proto.SyncSyn{
 		CommandName: command.CommandType,
 		CommandArgs: command.Args,
 	})

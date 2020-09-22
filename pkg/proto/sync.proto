@@ -1,0 +1,24 @@
+syntax = "proto3";
+option go_package = "pkg/proto";
+package proto;
+
+service Sync {
+    rpc Send (SyncSyn) returns (SyncAck) {
+    }
+}
+
+enum CheckName {
+    HealthCheck = 0;
+}
+
+message SyncSyn {
+    CheckName commandName = 1;
+    string commandArgs = 2;
+}
+
+message SyncAck {
+    CheckName commandName = 1;
+    string response =2;
+    string error = 3;
+
+}
