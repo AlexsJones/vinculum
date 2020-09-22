@@ -7,7 +7,11 @@
 package proto
 
 import (
+	context "context"
 	proto "github.com/golang/protobuf/proto"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -72,6 +76,52 @@ func (x NodeConfig_State) Number() protoreflect.EnumNumber {
 // Deprecated: Use NodeConfig_State.Descriptor instead.
 func (NodeConfig_State) EnumDescriptor() ([]byte, []int) {
 	return file_node_proto_rawDescGZIP(), []int{0, 0}
+}
+
+type ConnectionAck_State int32
+
+const (
+	ConnectionAck_Negotiating ConnectionAck_State = 0
+	ConnectionAck_Known       ConnectionAck_State = 1
+)
+
+// Enum value maps for ConnectionAck_State.
+var (
+	ConnectionAck_State_name = map[int32]string{
+		0: "Negotiating",
+		1: "Known",
+	}
+	ConnectionAck_State_value = map[string]int32{
+		"Negotiating": 0,
+		"Known":       1,
+	}
+)
+
+func (x ConnectionAck_State) Enum() *ConnectionAck_State {
+	p := new(ConnectionAck_State)
+	*p = x
+	return p
+}
+
+func (x ConnectionAck_State) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ConnectionAck_State) Descriptor() protoreflect.EnumDescriptor {
+	return file_node_proto_enumTypes[1].Descriptor()
+}
+
+func (ConnectionAck_State) Type() protoreflect.EnumType {
+	return &file_node_proto_enumTypes[1]
+}
+
+func (x ConnectionAck_State) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ConnectionAck_State.Descriptor instead.
+func (ConnectionAck_State) EnumDescriptor() ([]byte, []int) {
+	return file_node_proto_rawDescGZIP(), []int{2, 0}
 }
 
 type NodeConfig struct {
@@ -145,6 +195,108 @@ func (x *NodeConfig) GetState() NodeConfig_State {
 	return NodeConfig_Unknown
 }
 
+type ConnectionSyn struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Node *NodeConfig `protobuf:"bytes,1,opt,name=node,proto3" json:"node,omitempty"`
+}
+
+func (x *ConnectionSyn) Reset() {
+	*x = ConnectionSyn{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ConnectionSyn) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConnectionSyn) ProtoMessage() {}
+
+func (x *ConnectionSyn) ProtoReflect() protoreflect.Message {
+	mi := &file_node_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ConnectionSyn.ProtoReflect.Descriptor instead.
+func (*ConnectionSyn) Descriptor() ([]byte, []int) {
+	return file_node_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ConnectionSyn) GetNode() *NodeConfig {
+	if x != nil {
+		return x.Node
+	}
+	return nil
+}
+
+type ConnectionAck struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Node  *NodeConfig         `protobuf:"bytes,1,opt,name=node,proto3" json:"node,omitempty"`
+	State ConnectionAck_State `protobuf:"varint,2,opt,name=state,proto3,enum=proto.ConnectionAck_State" json:"state,omitempty"`
+}
+
+func (x *ConnectionAck) Reset() {
+	*x = ConnectionAck{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_node_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ConnectionAck) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConnectionAck) ProtoMessage() {}
+
+func (x *ConnectionAck) ProtoReflect() protoreflect.Message {
+	mi := &file_node_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ConnectionAck.ProtoReflect.Descriptor instead.
+func (*ConnectionAck) Descriptor() ([]byte, []int) {
+	return file_node_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ConnectionAck) GetNode() *NodeConfig {
+	if x != nil {
+		return x.Node
+	}
+	return nil
+}
+
+func (x *ConnectionAck) GetState() ConnectionAck_State {
+	if x != nil {
+		return x.State
+	}
+	return ConnectionAck_Negotiating
+}
+
 var File_node_proto protoreflect.FileDescriptor
 
 var file_node_proto_rawDesc = []byte{
@@ -160,8 +312,25 @@ var file_node_proto_rawDesc = []byte{
 	0x52, 0x05, 0x73, 0x74, 0x61, 0x74, 0x65, 0x22, 0x31, 0x0a, 0x05, 0x53, 0x74, 0x61, 0x74, 0x65,
 	0x12, 0x0b, 0x0a, 0x07, 0x55, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x6e, 0x10, 0x00, 0x12, 0x09, 0x0a,
 	0x05, 0x41, 0x6c, 0x69, 0x76, 0x65, 0x10, 0x01, 0x12, 0x10, 0x0a, 0x0c, 0x55, 0x6e, 0x72, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x69, 0x76, 0x65, 0x10, 0x02, 0x42, 0x0b, 0x5a, 0x09, 0x70, 0x6b,
-	0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x69, 0x76, 0x65, 0x10, 0x02, 0x22, 0x36, 0x0a, 0x0d, 0x43, 0x6f,
+	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x79, 0x6e, 0x12, 0x25, 0x0a, 0x04, 0x6e,
+	0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2e, 0x4e, 0x6f, 0x64, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52, 0x04, 0x6e, 0x6f,
+	0x64, 0x65, 0x22, 0x8d, 0x01, 0x0a, 0x0d, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f,
+	0x6e, 0x41, 0x63, 0x6b, 0x12, 0x25, 0x0a, 0x04, 0x6e, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4e, 0x6f, 0x64, 0x65, 0x43,
+	0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52, 0x04, 0x6e, 0x6f, 0x64, 0x65, 0x12, 0x30, 0x0a, 0x05, 0x73,
+	0x74, 0x61, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1a, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x6b,
+	0x2e, 0x53, 0x74, 0x61, 0x74, 0x65, 0x52, 0x05, 0x73, 0x74, 0x61, 0x74, 0x65, 0x22, 0x23, 0x0a,
+	0x05, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x0f, 0x0a, 0x0b, 0x4e, 0x65, 0x67, 0x6f, 0x74, 0x69,
+	0x61, 0x74, 0x69, 0x6e, 0x67, 0x10, 0x00, 0x12, 0x09, 0x0a, 0x05, 0x4b, 0x6e, 0x6f, 0x77, 0x6e,
+	0x10, 0x01, 0x32, 0x40, 0x0a, 0x04, 0x4e, 0x6f, 0x64, 0x65, 0x12, 0x38, 0x0a, 0x08, 0x52, 0x65,
+	0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x12, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43,
+	0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x79, 0x6e, 0x1a, 0x14, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x41,
+	0x63, 0x6b, 0x22, 0x00, 0x42, 0x0b, 0x5a, 0x09, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -176,19 +345,27 @@ func file_node_proto_rawDescGZIP() []byte {
 	return file_node_proto_rawDescData
 }
 
-var file_node_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_node_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_node_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_node_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_node_proto_goTypes = []interface{}{
-	(NodeConfig_State)(0), // 0: proto.NodeConfig.State
-	(*NodeConfig)(nil),    // 1: proto.NodeConfig
+	(NodeConfig_State)(0),    // 0: proto.NodeConfig.State
+	(ConnectionAck_State)(0), // 1: proto.ConnectionAck.State
+	(*NodeConfig)(nil),       // 2: proto.NodeConfig
+	(*ConnectionSyn)(nil),    // 3: proto.ConnectionSyn
+	(*ConnectionAck)(nil),    // 4: proto.ConnectionAck
 }
 var file_node_proto_depIdxs = []int32{
 	0, // 0: proto.NodeConfig.state:type_name -> proto.NodeConfig.State
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 1: proto.ConnectionSyn.node:type_name -> proto.NodeConfig
+	2, // 2: proto.ConnectionAck.node:type_name -> proto.NodeConfig
+	1, // 3: proto.ConnectionAck.state:type_name -> proto.ConnectionAck.State
+	3, // 4: proto.Node.Register:input_type -> proto.ConnectionSyn
+	4, // 5: proto.Node.Register:output_type -> proto.ConnectionAck
+	5, // [5:6] is the sub-list for method output_type
+	4, // [4:5] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_node_proto_init() }
@@ -209,16 +386,40 @@ func file_node_proto_init() {
 				return nil
 			}
 		}
+		file_node_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ConnectionSyn); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_node_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ConnectionAck); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_node_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   1,
+			NumEnums:      2,
+			NumMessages:   3,
 			NumExtensions: 0,
-			NumServices:   0,
+			NumServices:   1,
 		},
 		GoTypes:           file_node_proto_goTypes,
 		DependencyIndexes: file_node_proto_depIdxs,
@@ -229,4 +430,86 @@ func file_node_proto_init() {
 	file_node_proto_rawDesc = nil
 	file_node_proto_goTypes = nil
 	file_node_proto_depIdxs = nil
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConnInterface
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion6
+
+// NodeClient is the client API for Node service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type NodeClient interface {
+	// Client to leader registration
+	Register(ctx context.Context, in *ConnectionSyn, opts ...grpc.CallOption) (*ConnectionAck, error)
+}
+
+type nodeClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewNodeClient(cc grpc.ClientConnInterface) NodeClient {
+	return &nodeClient{cc}
+}
+
+func (c *nodeClient) Register(ctx context.Context, in *ConnectionSyn, opts ...grpc.CallOption) (*ConnectionAck, error) {
+	out := new(ConnectionAck)
+	err := c.cc.Invoke(ctx, "/proto.Node/Register", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// NodeServer is the server API for Node service.
+type NodeServer interface {
+	// Client to leader registration
+	Register(context.Context, *ConnectionSyn) (*ConnectionAck, error)
+}
+
+// UnimplementedNodeServer can be embedded to have forward compatible implementations.
+type UnimplementedNodeServer struct {
+}
+
+func (*UnimplementedNodeServer) Register(context.Context, *ConnectionSyn) (*ConnectionAck, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
+
+func RegisterNodeServer(s *grpc.Server, srv NodeServer) {
+	s.RegisterService(&_Node_serviceDesc, srv)
+}
+
+func _Node_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConnectionSyn)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Node/Register",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServer).Register(ctx, req.(*ConnectionSyn))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Node_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.Node",
+	HandlerType: (*NodeServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Register",
+			Handler:    _Node_Register_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "node.proto",
 }

@@ -6,6 +6,9 @@ There is a small amount of intelligence in scheduling and should be thought of a
 
 As an example this works well across a cluster of Raspberry Pi Zero compute units.
 
+
+<img src="images/flow.png" width="50%" />
+
 ## Install
 ```shell script
  curl https://raw.githubusercontent.com/AlexsJones/vinculum/master/install.sh | sh -

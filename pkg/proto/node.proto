@@ -14,3 +14,21 @@ message NodeConfig {
     State state = 5;
 }
 
+service Node {
+    // Client to leader registration
+    rpc Register (ConnectionSyn) returns (ConnectionAck) {
+    }
+}
+
+message ConnectionSyn {
+    NodeConfig node = 1;
+}
+
+message ConnectionAck {
+    NodeConfig node = 1;
+    enum State {
+        Negotiating = 0;
+        Known = 1;
+    }
+    State state = 2;
+}
