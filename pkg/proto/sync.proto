@@ -7,18 +7,12 @@ service Sync {
     }
 }
 
-enum CheckName {
-    HealthCheck = 0;
-}
-
 message SyncSyn {
-    CheckName commandName = 1;
     string commandArgs = 2;
 }
 
 message SyncAck {
-    CheckName commandName = 1;
-    string response =2;
-    string error = 3;
+    string response =1;
+    string error = 2;
 
 }

@@ -4,15 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
+
 	"github.com/AlexsJones/vinculum/pkg/proto"
 	"github.com/AlexsJones/vinculum/pkg/sys"
 	"github.com/AlexsJones/vinculum/pkg/tracker"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/peer"
-	"net"
 )
 
-type ConnectionServerImpl struct{}
+type NodeServerImpl struct{}
 
 func init() {
 	for _, cidr := range []string{
@@ -32,6 +33,7 @@ func init() {
 		privateIPBlocks = append(privateIPBlocks, block)
 	}
 }
+
 var privateIPBlocks []*net.IPNet
 
 func isPrivateIP(ip net.IP) bool {
@@ -47,7 +49,7 @@ func isPrivateIP(ip net.IP) bool {
 	return false
 }
 
-func (ConnectionServerImpl) Register(ctx context.Context, syn *proto.ConnectionSyn) (*proto.ConnectionAck, error) {
+func (NodeServerImpl) Register(ctx context.Context, syn *proto.ConnectionSyn) (*proto.ConnectionAck, error) {
 
 	peer, bool := peer.FromContext(ctx)
 	if !bool {
@@ -61,7 +63,7 @@ func (ConnectionServerImpl) Register(ctx context.Context, syn *proto.ConnectionS
 	if isPrivateIP(net.ParseIP(ip)) {
 		log.Debug("Identified local client - Warning this is not recommended for more than one client")
 		syn.Node.IpAddr = "localhost"
-	}else {
+	} else {
 		syn.Node.IpAddr = ip
 	}
 	syn.Node.Network = peer.Addr.Network()

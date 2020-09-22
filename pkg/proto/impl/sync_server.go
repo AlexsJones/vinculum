@@ -15,9 +15,9 @@ func (SyncServerImpl) Send(ctx context.Context, syn *proto.SyncSyn) (*proto.Sync
 
 	peer,ok := peer.FromContext(ctx)
 	if ok {
-		log.Debugf("Received incoming command %s from %s", syn.CommandName.String(),peer.Addr.String())
+		log.Debugf("Received incoming health check from %s",peer.Addr.String())
 	}else {
-		log.Debugf("Received incoming command %s", syn.CommandName.String())
+		log.Debugf("Received incoming health check from an unknown leader")
 	}
 	return follower.Runtime(syn)
 }

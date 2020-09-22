@@ -3,6 +3,7 @@ package impl
 import (
 	"context"
 	"fmt"
+
 	"github.com/AlexsJones/vinculum/pkg/proto"
 	"github.com/AlexsJones/vinculum/pkg/sys"
 	"github.com/fatih/color"
@@ -11,7 +12,8 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-func ConnectClient(tls bool, caFile string, serverAddr string, serverHostOverride string) (*proto.ConnectionAck, error) {
+func NodeClient(tls bool, caFile string, serverAddr string,
+	serverHostOverride string) (*proto.ConnectionAck, error) {
 
 	var opts []grpc.DialOption
 	if tls {

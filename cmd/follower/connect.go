@@ -17,6 +17,9 @@ package follower
 
 import (
 	"fmt"
+	"net"
+	"os"
+
 	"github.com/AlexsJones/vinculum/pkg/config"
 	"github.com/AlexsJones/vinculum/pkg/proto"
 	"github.com/AlexsJones/vinculum/pkg/proto/impl"
@@ -24,8 +27,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
-	"net"
-	"os"
 )
 
 var (
@@ -36,7 +37,7 @@ var (
 )
 
 func syncListener(c chan bool) {
-	lis, err := net.Listen("tcp", config.DefaultGRPCommandListeningAddr)
+	lis, err := net.Listen("tcp", config.DefaultGRPSyncListeningAddr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -46,7 +47,7 @@ func syncListener(c chan bool) {
 
 	proto.RegisterSyncServer(grpcServer, commsServer)
 
-	color.Blue(fmt.Sprintf("Starting GRPC listener for commands on %s", config.DefaultGRPCommandListeningAddr))
+	color.Blue(fmt.Sprintf("Starting GRPC listener for commands on %s", config.DefaultGRPSyncListeningAddr))
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)
@@ -73,12 +74,11 @@ var connectCmd = &cobra.Command{
 
 		color.Blue("Starting node client")
 
-		if _, err := impl.ConnectClient(tls, caFile, serverAddr, serverHostOverride); err != nil {
+		if _, err := impl.NodeClient(tls, caFile, serverAddr, serverHostOverride); err != nil {
 			log.Fatal(err)
 		}
 
-		for
-		{
+		for {
 			select {
 			case msg := <-ctx:
 				if msg {
@@ -95,7 +95,6 @@ func init() {
 	connectCmd.Flags().StringVarP(&caFile, "cafile", "c", "", "The file containing the CA cert file")
 	connectCmd.Flags().StringVarP(&serverAddr, "serverAddr", "s", "localhost:7559", "The leader address in the format of host:port will default to localhost:7559	")
 	connectCmd.Flags().StringVarP(&serverHostOverride, "serverHostOverride", "o", "", "The leader name used to verify the hostname returned by the TLS handshake")
-
 
 	// Here you will define your flags and configuration settings.
 

@@ -16,7 +16,10 @@ limitations under the License.
 package leader
 
 import (
+	"context"
 	"fmt"
+
+	"net"
 
 	"github.com/AlexsJones/vinculum/pkg/config"
 	"github.com/AlexsJones/vinculum/pkg/leader"
@@ -26,7 +29,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
-	"net"
 )
 
 var (
@@ -36,19 +38,18 @@ var (
 	serverHostOverride string
 )
 
-func listen() {
-
-	lis, err := net.Listen("tcp", config.DefaultGRPCConnectListeningAddr)
+func nodeListener() {
+	lis, err := net.Listen("tcp", config.DefaultGRPCNodeListeningAddr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	commsServer := impl.ConnectionServerImpl{}
+	commsServer := impl.NodeServerImpl{}
 	grpcServer := grpc.NewServer()
 
 	proto.RegisterNodeServer(grpcServer, commsServer)
 
-	color.Blue(fmt.Sprintf("Starting GRPC leader for registering on %s", config.DefaultGRPCConnectListeningAddr))
+	color.Blue(fmt.Sprintf("Starting GRPC node server %s", config.DefaultGRPCNodeListeningAddr))
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)
@@ -58,6 +59,26 @@ func listen() {
 
 }
 
+func commandListener() {
+	lis, err := net.Listen("tcp", config.DefaultGRPCCommandListeningAddr)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	commsServer := impl.CommandServerImpl{}
+	grpcServer := grpc.NewServer()
+
+	proto.RegisterCommandServer(grpcServer, commsServer)
+
+	color.Blue(fmt.Sprintf("Starting GRPC command server %s", config.DefaultGRPCCommandListeningAddr))
+
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %s", err)
+
+	}
+	defer grpcServer.Stop()
+}
+
 // listenCmd represents the listen command
 var listenCmd = &cobra.Command{
 	Use:   "listen",
@@ -65,9 +86,13 @@ var listenCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		go listen()
+		go nodeListener()
+		go commandListener()
 
-		if err := leader.Run(tls, caFile, serverAddr); err != nil {
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
+		if err := leader.Run(tls, caFile, serverAddr, ctx); err != nil {
 			log.Fatal(err)
 		}
 	},

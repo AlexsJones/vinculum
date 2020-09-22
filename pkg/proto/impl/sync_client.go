@@ -1,17 +1,18 @@
 package impl
 
 import (
+	"context"
 	"errors"
 	"fmt"
+
 	"github.com/AlexsJones/vinculum/pkg/proto"
-	"github.com/AlexsJones/vinculum/pkg/types"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
 
-func SendCommand(tls bool, caFile string, serverAddr string,
-	serverHostOverride string, command types.SyncCommand) error {
+func SendSyncCommand(tls bool, caFile string, serverAddr string,
+	serverHostOverride string, ctx context.Context) error {
 
 	var opts []grpc.DialOption
 	if tls {
@@ -20,7 +21,7 @@ func SendCommand(tls bool, caFile string, serverAddr string,
 		}
 		creds, err := credentials.NewClientTLSFromFile(caFile, serverHostOverride)
 		if err != nil {
-			return errors.New(fmt.Sprintf("Failed to create TLS credentials %v",err))
+			return errors.New(fmt.Sprintf("Failed to create TLS credentials %v", err))
 		}
 		opts = append(opts, grpc.WithTransportCredentials(creds))
 	} else {
@@ -28,7 +29,7 @@ func SendCommand(tls bool, caFile string, serverAddr string,
 	}
 
 	opts = append(opts, grpc.WithBlock())
-	conn, err := grpc.DialContext(command.Context,serverAddr, opts...)
+	conn, err := grpc.DialContext(ctx, serverAddr, opts...)
 	if err != nil {
 		return err
 	}
@@ -36,15 +37,14 @@ func SendCommand(tls bool, caFile string, serverAddr string,
 
 	client := proto.NewSyncClient(conn)
 
-	commandAck, err := client.Send(command.Context,&proto.SyncSyn{
-		CommandName: command.CommandType,
-		CommandArgs: command.Args,
+	commandAck, err := client.Send(ctx, &proto.SyncSyn{
+		CommandArgs: "",
 	})
 	if err != nil {
 		return err
 	}
 	if commandAck.Error != "" {
-		log.Warnf("%s sent error %s for command %s",serverAddr,commandAck.Error,commandAck.CommandName)
+		log.Warnf("%s sent error %s for health check", serverAddr, commandAck.Error)
 	}
 	return nil
 }

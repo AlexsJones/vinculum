@@ -1,6 +1,7 @@
 package config
 
 var (
-	DefaultGRPCommandListeningAddr  = ":7580"
-	DefaultGRPCConnectListeningAddr = ":7559"
+	DefaultGRPSyncListeningAddr  = ":7580"
+	DefaultGRPCNodeListeningAddr = ":7559"
+	DefaultGRPCCommandListeningAddr = ":7560"
 )

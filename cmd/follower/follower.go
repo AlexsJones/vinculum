@@ -23,7 +23,7 @@ import (
 var FollowerCmd = &cobra.Command{
 	Use:   "follower",
 	Short: "",
-	Long: ``,
+	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},

@@ -16,33 +16,47 @@ limitations under the License.
 package ctl
 
 import (
-	"fmt"
 	"log"
+
+	"github.com/AlexsJones/vinculum/pkg/proto"
+	"github.com/AlexsJones/vinculum/pkg/proto/impl"
+	"github.com/fatih/color"
 
 	"github.com/spf13/cobra"
 )
 
 // shellCmd represents the shell command
 var (
-	inputCommand string
+	inputCommand       string
+	tls                bool
+	caFile             string
+	serverAddr         string
+	serverHostOverride string
 )
+
 var shellCmd = &cobra.Command{
 	Use:   "shell",
 	Short: "Run remote shell commands",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		fmt.Printf("Running command %s", inputCommand)
+		color.Blue("Starting node client")
 
+		if err := impl.SendCommand(tls, caFile, serverAddr, serverHostOverride, inputCommand,
+			proto.CommandType_CtlShell); err != nil {
+			log.Fatal(err)
+		}
 	},
 }
 
 func init() {
 
-	shellCmd.Flags().StringVarP(&inputCommand, "command", "c", "", "Command to send to followers")
-	if err := shellCmd.MarkFlagRequired("command"); err != nil {
-		log.Fatal(err)
-	}
+	shellCmd.Flags().BoolVarP(&tls, "tls", "t", false, "Connection uses TLS if true, else plain TCP")
+	shellCmd.Flags().StringVarP(&caFile, "cafile", "c", "", "The file containing the CA cert file")
+	shellCmd.Flags().StringVarP(&serverAddr, "serverAddr", "s", "localhost:7560", "The leader address in the format of host:port will default to localhost:7560	")
+	shellCmd.Flags().StringVarP(&serverHostOverride, "serverHostOverride", "o", "", "The leader name used to verify the hostname returned by the TLS handshake")
+	shellCmd.Flags().StringVarP(&inputCommand, "command", "i", "", "Command to send to followers")
+
 	CtlCmd.AddCommand(shellCmd)
 
 	// Here you will define your flags and configuration settings.
