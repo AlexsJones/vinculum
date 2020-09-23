@@ -30,10 +30,7 @@ import (
 )
 
 var (
-	tls                bool
-	caFile             string
-	serverAddr         string
-	serverHostOverride string
+	serverAddr string
 )
 
 func syncListener(c chan bool) {
@@ -74,7 +71,7 @@ var connectCmd = &cobra.Command{
 
 		color.Blue("Starting node client")
 
-		if _, err := impl.NodeClient(tls, caFile, serverAddr, serverHostOverride); err != nil {
+		if _, err := impl.NodeClient(config.Tls, config.CaFile, serverAddr, config.ServerHostOverride); err != nil {
 			log.Fatal(err)
 		}
 
@@ -91,10 +88,10 @@ var connectCmd = &cobra.Command{
 
 func init() {
 
-	connectCmd.Flags().BoolVarP(&tls, "tls", "t", false, "Connection uses TLS if true, else plain TCP")
-	connectCmd.Flags().StringVarP(&caFile, "cafile", "c", "", "The file containing the CA cert file")
+	connectCmd.Flags().BoolVarP(&config.Tls, "tls", "t", false, "Connection uses TLS if true, else plain TCP")
+	connectCmd.Flags().StringVarP(&config.CaFile, "cafile", "c", "", "The file containing the CA cert file")
 	connectCmd.Flags().StringVarP(&serverAddr, "serverAddr", "s", "localhost:7559", "The leader address in the format of host:port will default to localhost:7559	")
-	connectCmd.Flags().StringVarP(&serverHostOverride, "serverHostOverride", "o", "", "The leader name used to verify the hostname returned by the TLS handshake")
+	connectCmd.Flags().StringVarP(&config.ServerHostOverride, "serverHostOverride", "o", "", "The leader name used to verify the hostname returned by the TLS handshake")
 
 	// Here you will define your flags and configuration settings.
 

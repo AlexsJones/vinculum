@@ -2,12 +2,12 @@ package impl
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/AlexsJones/vinculum/pkg/proto"
 	"github.com/AlexsJones/vinculum/pkg/sys"
 	"github.com/fatih/color"
-	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
@@ -18,11 +18,11 @@ func NodeClient(tls bool, caFile string, serverAddr string,
 	var opts []grpc.DialOption
 	if tls {
 		if caFile == "" {
-			log.Fatal("caFile is missing")
+			return nil, errors.New("caFile is missing")
 		}
 		creds, err := credentials.NewClientTLSFromFile(caFile, serverHostOverride)
 		if err != nil {
-			log.Fatalf("Failed to create TLS credentials %v", err)
+			return nil, fmt.Errorf("Failed to create TLS credentials %v", err)
 		}
 		opts = append(opts, grpc.WithTransportCredentials(creds))
 	} else {
@@ -30,10 +30,10 @@ func NodeClient(tls bool, caFile string, serverAddr string,
 	}
 
 	opts = append(opts, grpc.WithBlock())
-	color.Yellow(fmt.Sprintf("Connecting to %s", serverAddr))
+	color.Yellow(fmt.Sprintf("NodeClient: Connecting to %s", serverAddr))
 	conn, err := grpc.Dial(serverAddr, opts...)
 	if err != nil {
-		log.Fatalf("fail to dial: %v", err)
+		return nil, fmt.Errorf("fail to dial: %v", err)
 	}
 	defer conn.Close()
 

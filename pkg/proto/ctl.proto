@@ -1,14 +1,11 @@
 syntax = "proto3";
 option go_package = "pkg/proto";
 package proto;
+import "types.proto";
 
-service Command {
+service CTL {
   rpc Send (Input) returns (stream Update) {
   }
-}
-
-enum CommandType {
-  CtlShell = 0;
 }
 
 message Input {

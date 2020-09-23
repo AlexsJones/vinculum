@@ -13,7 +13,8 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-func SendCommand(tls bool, caFile string, serverAddr string,
+//SendCTLCommand inputs a CLI based control command
+func SendCTLCommand(tls bool, caFile string, serverAddr string,
 	serverHostOverride string, command string, commandType proto.CommandType) error {
 	var opts []grpc.DialOption
 	if tls {
@@ -22,7 +23,7 @@ func SendCommand(tls bool, caFile string, serverAddr string,
 		}
 		creds, err := credentials.NewClientTLSFromFile(caFile, serverHostOverride)
 		if err != nil {
-			return errors.New(fmt.Sprintf("failed to create TLS credentials %v", err))
+			return fmt.Errorf("failed to create TLS credentials %v", err)
 		}
 		opts = append(opts, grpc.WithTransportCredentials(creds))
 	} else {
@@ -30,14 +31,14 @@ func SendCommand(tls bool, caFile string, serverAddr string,
 	}
 
 	opts = append(opts, grpc.WithBlock())
-	color.Yellow(fmt.Sprintf("Connecting to %s", serverAddr))
+	color.Yellow(fmt.Sprintf("CTLClient: Connecting to %s", serverAddr))
 	conn, err := grpc.Dial(serverAddr, opts...)
 	if err != nil {
-		return errors.New(fmt.Sprintf("fail to dial: %v", err))
+		return fmt.Errorf("fail to dial: %v", err)
 	}
 	defer conn.Close()
 
-	client := proto.NewCommandClient(conn)
+	client := proto.NewCTLClient(conn)
 
 	sendClient, err := client.Send(context.Background(), &proto.Input{
 		Command:     command,

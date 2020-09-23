@@ -59,8 +59,8 @@ func nodeListener() {
 
 }
 
-func commandListener() {
-	lis, err := net.Listen("tcp", config.DefaultGRPCCommandListeningAddr)
+func ctlListener() {
+	lis, err := net.Listen("tcp", config.DefaultGRPCCTLListeningAddr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -68,9 +68,9 @@ func commandListener() {
 	commsServer := impl.CommandServerImpl{}
 	grpcServer := grpc.NewServer()
 
-	proto.RegisterCommandServer(grpcServer, commsServer)
+	proto.RegisterCTLServer(grpcServer, commsServer)
 
-	color.Blue(fmt.Sprintf("Starting GRPC command server %s", config.DefaultGRPCCommandListeningAddr))
+	color.Blue(fmt.Sprintf("Starting GRPC CTL server %s", config.DefaultGRPCCTLListeningAddr))
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)
@@ -87,7 +87,7 @@ var listenCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		go nodeListener()
-		go commandListener()
+		go ctlListener()
 
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()

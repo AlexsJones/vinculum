@@ -36,7 +36,7 @@ func runHealthCheck(tls bool, caFile string, serverHostOverride string,
 			color.Yellow("Sending health check sync to %s@%s", node.Guid, serverAdd)
 
 			ctx, _ := context.WithDeadline(parentContext, time.Now().Add(time.Duration(time.Second*2)))
-			err := impl.SendSyncCommand(tls,
+			err := impl.SendHealthCheck(tls,
 				caFile, serverAdd,
 				serverHostOverride,
 				ctx)

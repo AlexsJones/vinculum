@@ -29,16 +29,14 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-type SyncSyn struct {
+type HealthCheckSyn struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	CommandArgs string `protobuf:"bytes,2,opt,name=commandArgs,proto3" json:"commandArgs,omitempty"`
 }
 
-func (x *SyncSyn) Reset() {
-	*x = SyncSyn{}
+func (x *HealthCheckSyn) Reset() {
+	*x = HealthCheckSyn{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_sync_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -46,13 +44,13 @@ func (x *SyncSyn) Reset() {
 	}
 }
 
-func (x *SyncSyn) String() string {
+func (x *HealthCheckSyn) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SyncSyn) ProtoMessage() {}
+func (*HealthCheckSyn) ProtoMessage() {}
 
-func (x *SyncSyn) ProtoReflect() protoreflect.Message {
+func (x *HealthCheckSyn) ProtoReflect() protoreflect.Message {
 	mi := &file_sync_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,19 +62,12 @@ func (x *SyncSyn) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SyncSyn.ProtoReflect.Descriptor instead.
-func (*SyncSyn) Descriptor() ([]byte, []int) {
+// Deprecated: Use HealthCheckSyn.ProtoReflect.Descriptor instead.
+func (*HealthCheckSyn) Descriptor() ([]byte, []int) {
 	return file_sync_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *SyncSyn) GetCommandArgs() string {
-	if x != nil {
-		return x.CommandArgs
-	}
-	return ""
-}
-
-type SyncAck struct {
+type HealthCheckAck struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -85,8 +76,8 @@ type SyncAck struct {
 	Error    string `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
 }
 
-func (x *SyncAck) Reset() {
-	*x = SyncAck{}
+func (x *HealthCheckAck) Reset() {
+	*x = HealthCheckAck{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_sync_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -94,13 +85,13 @@ func (x *SyncAck) Reset() {
 	}
 }
 
-func (x *SyncAck) String() string {
+func (x *HealthCheckAck) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SyncAck) ProtoMessage() {}
+func (*HealthCheckAck) ProtoMessage() {}
 
-func (x *SyncAck) ProtoReflect() protoreflect.Message {
+func (x *HealthCheckAck) ProtoReflect() protoreflect.Message {
 	mi := &file_sync_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -112,21 +103,139 @@ func (x *SyncAck) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SyncAck.ProtoReflect.Descriptor instead.
-func (*SyncAck) Descriptor() ([]byte, []int) {
+// Deprecated: Use HealthCheckAck.ProtoReflect.Descriptor instead.
+func (*HealthCheckAck) Descriptor() ([]byte, []int) {
 	return file_sync_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *SyncAck) GetResponse() string {
+func (x *HealthCheckAck) GetResponse() string {
 	if x != nil {
 		return x.Response
 	}
 	return ""
 }
 
-func (x *SyncAck) GetError() string {
+func (x *HealthCheckAck) GetError() string {
 	if x != nil {
 		return x.Error
+	}
+	return ""
+}
+
+type CommandInput struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Command     string      `protobuf:"bytes,1,opt,name=command,proto3" json:"command,omitempty"`
+	CommandType CommandType `protobuf:"varint,2,opt,name=commandType,proto3,enum=proto.CommandType" json:"commandType,omitempty"`
+}
+
+func (x *CommandInput) Reset() {
+	*x = CommandInput{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sync_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommandInput) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommandInput) ProtoMessage() {}
+
+func (x *CommandInput) ProtoReflect() protoreflect.Message {
+	mi := &file_sync_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommandInput.ProtoReflect.Descriptor instead.
+func (*CommandInput) Descriptor() ([]byte, []int) {
+	return file_sync_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *CommandInput) GetCommand() string {
+	if x != nil {
+		return x.Command
+	}
+	return ""
+}
+
+func (x *CommandInput) GetCommandType() CommandType {
+	if x != nil {
+		return x.CommandType
+	}
+	return CommandType_Shell
+}
+
+type CommandOutput struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	CommandType CommandType `protobuf:"varint,1,opt,name=commandType,proto3,enum=proto.CommandType" json:"commandType,omitempty"`
+	Error       string      `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
+	Response    string      `protobuf:"bytes,3,opt,name=response,proto3" json:"response,omitempty"`
+}
+
+func (x *CommandOutput) Reset() {
+	*x = CommandOutput{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sync_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommandOutput) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommandOutput) ProtoMessage() {}
+
+func (x *CommandOutput) ProtoReflect() protoreflect.Message {
+	mi := &file_sync_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommandOutput.ProtoReflect.Descriptor instead.
+func (*CommandOutput) Descriptor() ([]byte, []int) {
+	return file_sync_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *CommandOutput) GetCommandType() CommandType {
+	if x != nil {
+		return x.CommandType
+	}
+	return CommandType_Shell
+}
+
+func (x *CommandOutput) GetError() string {
+	if x != nil {
+		return x.Error
+	}
+	return ""
+}
+
+func (x *CommandOutput) GetResponse() string {
+	if x != nil {
+		return x.Response
 	}
 	return ""
 }
@@ -135,18 +244,36 @@ var File_sync_proto protoreflect.FileDescriptor
 
 var file_sync_proto_rawDesc = []byte{
 	0x0a, 0x0a, 0x73, 0x79, 0x6e, 0x63, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x22, 0x2b, 0x0a, 0x07, 0x53, 0x79, 0x6e, 0x63, 0x53, 0x79, 0x6e, 0x12, 0x20,
-	0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x72, 0x67, 0x73, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x41, 0x72, 0x67, 0x73,
-	0x22, 0x3b, 0x0a, 0x07, 0x53, 0x79, 0x6e, 0x63, 0x41, 0x63, 0x6b, 0x12, 0x1a, 0x0a, 0x08, 0x72,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x72,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x32, 0x30, 0x0a,
-	0x04, 0x53, 0x79, 0x6e, 0x63, 0x12, 0x28, 0x0a, 0x04, 0x53, 0x65, 0x6e, 0x64, 0x12, 0x0e, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x79, 0x6e, 0x63, 0x53, 0x79, 0x6e, 0x1a, 0x0e, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x79, 0x6e, 0x63, 0x41, 0x63, 0x6b, 0x22, 0x00, 0x42,
-	0x0b, 0x5a, 0x09, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x74, 0x6f, 0x1a, 0x0b, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x22, 0x10, 0x0a, 0x0e, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x53,
+	0x79, 0x6e, 0x22, 0x42, 0x0a, 0x0e, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x43, 0x68, 0x65, 0x63,
+	0x6b, 0x41, 0x63, 0x6b, 0x12, 0x1a, 0x0a, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x22, 0x5e, 0x0a, 0x0c, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
+	0x64, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64,
+	0x12, 0x34, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x54, 0x79, 0x70, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f,
+	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x54, 0x79, 0x70, 0x65, 0x52, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61,
+	0x6e, 0x64, 0x54, 0x79, 0x70, 0x65, 0x22, 0x77, 0x0a, 0x0d, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
+	0x64, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x12, 0x34, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61,
+	0x6e, 0x64, 0x54, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x12, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x54, 0x79, 0x70, 0x65,
+	0x52, 0x0b, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x54, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a,
+	0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72,
+	0x72, 0x6f, 0x72, 0x12, 0x1a, 0x0a, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32,
+	0x7d, 0x0a, 0x04, 0x53, 0x79, 0x6e, 0x63, 0x12, 0x3d, 0x0a, 0x0b, 0x48, 0x65, 0x61, 0x6c, 0x74,
+	0x68, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x12, 0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x48,
+	0x65, 0x61, 0x6c, 0x74, 0x68, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x53, 0x79, 0x6e, 0x1a, 0x15, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x43, 0x68, 0x65, 0x63,
+	0x6b, 0x41, 0x63, 0x6b, 0x22, 0x00, 0x12, 0x36, 0x0a, 0x07, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
+	0x64, 0x12, 0x13, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
+	0x64, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x1a, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43,
+	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x22, 0x00, 0x42, 0x0b,
+	0x5a, 0x09, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -161,19 +288,26 @@ func file_sync_proto_rawDescGZIP() []byte {
 	return file_sync_proto_rawDescData
 }
 
-var file_sync_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_sync_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_sync_proto_goTypes = []interface{}{
-	(*SyncSyn)(nil), // 0: proto.SyncSyn
-	(*SyncAck)(nil), // 1: proto.SyncAck
+	(*HealthCheckSyn)(nil), // 0: proto.HealthCheckSyn
+	(*HealthCheckAck)(nil), // 1: proto.HealthCheckAck
+	(*CommandInput)(nil),   // 2: proto.CommandInput
+	(*CommandOutput)(nil),  // 3: proto.CommandOutput
+	(CommandType)(0),       // 4: proto.CommandType
 }
 var file_sync_proto_depIdxs = []int32{
-	0, // 0: proto.Sync.Send:input_type -> proto.SyncSyn
-	1, // 1: proto.Sync.Send:output_type -> proto.SyncAck
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	4, // 0: proto.CommandInput.commandType:type_name -> proto.CommandType
+	4, // 1: proto.CommandOutput.commandType:type_name -> proto.CommandType
+	0, // 2: proto.Sync.HealthCheck:input_type -> proto.HealthCheckSyn
+	2, // 3: proto.Sync.Command:input_type -> proto.CommandInput
+	1, // 4: proto.Sync.HealthCheck:output_type -> proto.HealthCheckAck
+	3, // 5: proto.Sync.Command:output_type -> proto.CommandOutput
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_sync_proto_init() }
@@ -181,9 +315,10 @@ func file_sync_proto_init() {
 	if File_sync_proto != nil {
 		return
 	}
+	file_types_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_sync_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SyncSyn); i {
+			switch v := v.(*HealthCheckSyn); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -195,7 +330,31 @@ func file_sync_proto_init() {
 			}
 		}
 		file_sync_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SyncAck); i {
+			switch v := v.(*HealthCheckAck); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sync_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CommandInput); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sync_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CommandOutput); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -213,7 +372,7 @@ func file_sync_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_sync_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -239,7 +398,8 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type SyncClient interface {
-	Send(ctx context.Context, in *SyncSyn, opts ...grpc.CallOption) (*SyncAck, error)
+	HealthCheck(ctx context.Context, in *HealthCheckSyn, opts ...grpc.CallOption) (*HealthCheckAck, error)
+	Command(ctx context.Context, in *CommandInput, opts ...grpc.CallOption) (*CommandOutput, error)
 }
 
 type syncClient struct {
@@ -250,9 +410,18 @@ func NewSyncClient(cc grpc.ClientConnInterface) SyncClient {
 	return &syncClient{cc}
 }
 
-func (c *syncClient) Send(ctx context.Context, in *SyncSyn, opts ...grpc.CallOption) (*SyncAck, error) {
-	out := new(SyncAck)
-	err := c.cc.Invoke(ctx, "/proto.Sync/Send", in, out, opts...)
+func (c *syncClient) HealthCheck(ctx context.Context, in *HealthCheckSyn, opts ...grpc.CallOption) (*HealthCheckAck, error) {
+	out := new(HealthCheckAck)
+	err := c.cc.Invoke(ctx, "/proto.Sync/HealthCheck", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *syncClient) Command(ctx context.Context, in *CommandInput, opts ...grpc.CallOption) (*CommandOutput, error) {
+	out := new(CommandOutput)
+	err := c.cc.Invoke(ctx, "/proto.Sync/Command", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -261,35 +430,57 @@ func (c *syncClient) Send(ctx context.Context, in *SyncSyn, opts ...grpc.CallOpt
 
 // SyncServer is the server API for Sync service.
 type SyncServer interface {
-	Send(context.Context, *SyncSyn) (*SyncAck, error)
+	HealthCheck(context.Context, *HealthCheckSyn) (*HealthCheckAck, error)
+	Command(context.Context, *CommandInput) (*CommandOutput, error)
 }
 
 // UnimplementedSyncServer can be embedded to have forward compatible implementations.
 type UnimplementedSyncServer struct {
 }
 
-func (*UnimplementedSyncServer) Send(context.Context, *SyncSyn) (*SyncAck, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Send not implemented")
+func (*UnimplementedSyncServer) HealthCheck(context.Context, *HealthCheckSyn) (*HealthCheckAck, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HealthCheck not implemented")
+}
+func (*UnimplementedSyncServer) Command(context.Context, *CommandInput) (*CommandOutput, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Command not implemented")
 }
 
 func RegisterSyncServer(s *grpc.Server, srv SyncServer) {
 	s.RegisterService(&_Sync_serviceDesc, srv)
 }
 
-func _Sync_Send_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SyncSyn)
+func _Sync_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HealthCheckSyn)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SyncServer).Send(ctx, in)
+		return srv.(SyncServer).HealthCheck(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Sync/Send",
+		FullMethod: "/proto.Sync/HealthCheck",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SyncServer).Send(ctx, req.(*SyncSyn))
+		return srv.(SyncServer).HealthCheck(ctx, req.(*HealthCheckSyn))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Sync_Command_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommandInput)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SyncServer).Command(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Sync/Command",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SyncServer).Command(ctx, req.(*CommandInput))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -299,8 +490,12 @@ var _Sync_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*SyncServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Send",
-			Handler:    _Sync_Send_Handler,
+			MethodName: "HealthCheck",
+			Handler:    _Sync_HealthCheck_Handler,
+		},
+		{
+			MethodName: "Command",
+			Handler:    _Sync_Command_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

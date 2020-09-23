@@ -18,20 +18,17 @@ package ctl
 import (
 	"log"
 
+	"github.com/AlexsJones/vinculum/pkg/config"
 	"github.com/AlexsJones/vinculum/pkg/proto"
 	"github.com/AlexsJones/vinculum/pkg/proto/impl"
-	"github.com/fatih/color"
 
 	"github.com/spf13/cobra"
 )
 
 // shellCmd represents the shell command
 var (
-	inputCommand       string
-	tls                bool
-	caFile             string
-	serverAddr         string
-	serverHostOverride string
+	inputCommand string
+	serverAddr string
 )
 
 var shellCmd = &cobra.Command{
@@ -40,10 +37,10 @@ var shellCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		color.Blue("Starting node client")
 
-		if err := impl.SendCommand(tls, caFile, serverAddr, serverHostOverride, inputCommand,
-			proto.CommandType_CtlShell); err != nil {
+		if err := impl.SendCTLCommand(config.Tls, config.CaFile,
+			serverAddr, config.ServerHostOverride, inputCommand,
+			proto.CommandType_Shell); err != nil {
 			log.Fatal(err)
 		}
 	},
@@ -51,10 +48,11 @@ var shellCmd = &cobra.Command{
 
 func init() {
 
-	shellCmd.Flags().BoolVarP(&tls, "tls", "t", false, "Connection uses TLS if true, else plain TCP")
-	shellCmd.Flags().StringVarP(&caFile, "cafile", "c", "", "The file containing the CA cert file")
+
+	shellCmd.Flags().BoolVarP(&config.Tls, "tls", "t", false, "Connection uses TLS if true, else plain TCP")
+	shellCmd.Flags().StringVarP(&config.CaFile, "cafile", "c", "", "The file containing the CA cert file")
 	shellCmd.Flags().StringVarP(&serverAddr, "serverAddr", "s", "localhost:7560", "The leader address in the format of host:port will default to localhost:7560	")
-	shellCmd.Flags().StringVarP(&serverHostOverride, "serverHostOverride", "o", "", "The leader name used to verify the hostname returned by the TLS handshake")
+	shellCmd.Flags().StringVarP(&config.ServerHostOverride, "serverHostOverride", "o", "", "The leader name used to verify the hostname returned by the TLS handshake")
 	shellCmd.Flags().StringVarP(&inputCommand, "command", "i", "", "Command to send to followers")
 
 	CtlCmd.AddCommand(shellCmd)
