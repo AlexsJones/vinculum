@@ -4,11 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/AlexsJones/vinculum/pkg/config"
 	"github.com/AlexsJones/vinculum/pkg/proto"
 	"github.com/AlexsJones/vinculum/pkg/tracker"
 	log "github.com/sirupsen/logrus"
-	"time"
 )
 
 type CommandServerImpl struct{}
@@ -29,16 +30,18 @@ func (c CommandServerImpl) Send(input *proto.Input, server proto.CTL_SendServer)
 			}
 
 			serverAdd := fmt.Sprintf("%s%s", node.IpAddr, config.DefaultGRPSyncListeningAddr)
-			ctx, _ := context.WithDeadline(context.Background(), time.Now().Add(time.Duration(time.Second*2)))
+			ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(time.Duration(time.Second*2)))
+
+			defer cancel()
 
 			update := proto.Update{}
 
 			// Using the local node as server address rather than any default settings
 			// ServerHostOverride might be a problem later
-			ack, err := SendCommand(config.Tls,config.CaFile,
-				serverAdd,config.ServerHostOverride,
+			ack, err := SendCommand(config.Tls, config.CaFile,
+				serverAdd, config.ServerHostOverride,
 				ctx, &proto.CommandInput{
-					Command: input.Command,
+					Command:     input.Command,
 					CommandType: input.CommandType,
 				})
 
