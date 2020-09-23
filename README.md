@@ -7,7 +7,7 @@ There is a small amount of intelligence in scheduling and should be thought of a
 As an example this works well across a cluster of Raspberry Pi Zero compute units.
 
 
-<img src="images/flow.png" width="50%" />
+<img src="images/flow.png" width="80%" />
 
 ## Install
 ```shell script
