@@ -28,4 +28,8 @@ Start a follower
 vinculum follower connect -s localhost:7559
 ```
 
+Run a command
 
+```
+vinculum ctl shell --command="ls /var/log"
+```

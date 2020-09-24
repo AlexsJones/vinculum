@@ -16,7 +16,6 @@ limitations under the License.
 package leader
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 )
 
@@ -24,9 +23,9 @@ import (
 var LeaderCmd = &cobra.Command{
 	Use:   "leader",
 	Short: "",
-	Long: ``,
+	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("leader called")
+		cmd.Help()
 	},
 }
 
